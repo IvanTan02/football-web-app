@@ -1,0 +1,9 @@
+<% layout('layouts/boilerplate') %>
+
+
+<h1>All Premier League Teams</h1>
+<ol>
+    <% for (let team of teams) { %>
+    <li><%= team.name %></li>
+    <% } %>
+</ol>

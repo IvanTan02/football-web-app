@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/home.css">
+</head>
+
+<body>
+    <h1>Indexx EJS</h1>
+    <div id="wg-api-football-standings" data-host="v3.football.api-sports.io"
+        data-key="199f33e7ad0401610965c6f9dbfeaf81" data-league="39" data-team="" data-season="2023" data-theme=""
+        data-show-errors="false" data-show-logos="true" class="wg_loader">
+    </div>
+
+    <script type="module">
+        const storedContent = localStorage.getItem('widgetContent');
+        console.log(storedContent);
+        if (storedContent) {
+            document.getElementById('wg-api-football-standings').innerHTML = storedContent;
+        } 
+    </script>
+</body>
+
+</html>
