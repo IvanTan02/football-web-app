@@ -1,13 +1,3 @@
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
-
-const Team = require('../models/team');
-const LastReqDates = require('../models/lastReqDates');
-const axios = require('axios');
-const Player = require('../models/player');
-const currentDate = new Date();
-
 const requestPLTeams = async () => {
     try {
         const lastReqDate = await LastReqDates.findOne();
@@ -127,19 +117,4 @@ const makeReqObject = (endpoint, params) => {
 const hasMonthPassed = (lastDate, currentDate) => {
     const diffInMonths = (currentDate.getFullYear() - lastDate.getFullYear()) * 12 + (currentDate.getMonth() - lastDate.getMonth());
     return diffInMonths >= 1;
-}
-
-module.exports.loadPLTeams = async (req, res) => {
-    // await requestPLTeams();
-    const teams = await Team.find({});
-    res.render('teams/index', { teams });
-}
-
-module.exports.showTeam = async (req, res) => {
-    const { id } = req.params;
-    const team = await Team.findById(id).populate('squad');
-    console.log(team.squad)
-    // await requestCoach(id);
-    // await requestSquad(team);
-    res.render('teams/details', { team })
 }

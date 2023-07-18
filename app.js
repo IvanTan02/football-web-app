@@ -27,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // app.get('/home', leagueController.getLeagueTable);
 app.get('/teams', teamController.loadPLTeams);
+app.get('/teams/:id', teamController.showTeam);
 
 app.listen(3000, () => {
     console.log('Server listening on port 3000');

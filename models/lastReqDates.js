@@ -4,7 +4,9 @@ const Schema = mongoose.Schema;
 const reqDateSchema = new Schema({
     lastPLTeamsReq: {
         type: Date,
-        required: true
+    },
+    lastStandingReq: {
+        type: Date
     }
 });
 

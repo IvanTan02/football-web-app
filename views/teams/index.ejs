@@ -1,9 +1,19 @@
 <% layout('layouts/boilerplate') %>
 
-
 <h1>All Premier League Teams</h1>
-<ol>
-    <% for (let team of teams) { %>
-    <li><%= team.name %></li>
+<div class="row row-cols-2 row-cols-md-4">
+    <% for (let i = 0; i < teams.length; i++) { %>
+    <div class="col">
+        <div class="card mb-3">
+            <img src="<%= teams[i].team.logo %>" class="card-img-top mx-auto d-block p-3 pb-0"
+                alt="Image of <%= teams[i].team.name %>">
+            <div class="card-body">
+                <h5 class="card-title text-center"><%= teams[i].team.name %></h5>
+                <div class="d-flex justify-content-center mt-3">
+                    <a href="/teams/<%= teams[i]._id %>" class="btn btn-outline-primary">View Team</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <% } %>
-</ol>
+</div>
