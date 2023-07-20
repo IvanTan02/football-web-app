@@ -7,7 +7,11 @@ const playerSchema = new Schema({
     age: Number,
     number: Number,
     position: String,
-    photo: String
+    photo: String,
+    team: {
+        type: Schema.Types.ObjectId,
+        ref: 'Team'
+    }
 })
 
 const Player = mongoose.model('Player', playerSchema);

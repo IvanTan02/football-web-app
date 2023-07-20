@@ -5,10 +5,10 @@
     <% for (let i = 0; i < teams.length; i++) { %>
     <div class="col">
         <div class="card mb-3">
-            <img src="<%= teams[i].team.logo %>" class="card-img-top mx-auto d-block p-3 pb-0"
-                alt="Image of <%= teams[i].team.name %>">
+            <img src="<%= teams[i].logo %>" class="card-img-top mx-auto d-block p-3 pb-0"
+                alt="Image of <%= teams[i].name %>">
             <div class="card-body">
-                <h5 class="card-title text-center"><%= teams[i].team.name %></h5>
+                <h5 class="card-title text-center"><%= teams[i].name %></h5>
                 <div class="d-flex justify-content-center mt-3">
                     <a href="/teams/<%= teams[i]._id %>" class="btn btn-outline-primary">View Team</a>
                 </div>

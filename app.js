@@ -25,8 +25,8 @@ app.engine('ejs', ejsMate);
 
 app.use(express.static(path.join(__dirname, 'public')))
 
-// app.get('/home', leagueController.getLeagueTable);
-app.get('/teams', teamController.loadPLTeams);
+app.get('/home', leagueController.renderHomePage);
+app.get('/teams', teamController.teamsIndex);
 app.get('/teams/:id', teamController.showTeam);
 
 app.listen(3000, () => {

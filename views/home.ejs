@@ -1,27 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
+<% layout('layouts/boilerplate') %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/stylesheets/home.css">
-</head>
-
-<body>
-    <h1>Indexx EJS</h1>
-    <div id="wg-api-football-standings" data-host="v3.football.api-sports.io"
-        data-key="199f33e7ad0401610965c6f9dbfeaf81" data-league="39" data-team="" data-season="2023" data-theme=""
-        data-show-errors="false" data-show-logos="true" class="wg_loader">
+<h1>Premier League Table</h1>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center" scope="col">Position</th>
+                    <th scope="col">Team</th>
+                    <th scope="col">P</th>
+                    <th scope="col">W</th>
+                    <th scope="col">D</th>
+                    <th scope="col">L</th>
+                    <th scope="col">GF</th>
+                    <th scope="col">GA</th>
+                    <th scope="col">GD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(position of league.standings) { %>
+                <tr>
+                    <th class="text-center" scope="row"><%= position.rank %></th>
+                    <td><img src="<%= position.team.logo %>" alt="" style="height: 25px; width: 25px"
+                            class="me-1"><%= position.team.name %></td>
+                    <td><%= position.all.played %></td>
+                    <td><%= position.all.win %></td>
+                    <td><%= position.all.draw %></td>
+                    <td><%= position.all.lose %></td>
+                    <td><%= position.all.goals.for %></td>
+                    <td><%= position.all.goals.against %></td>
+                    <td><%= position.goalsDiff %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
     </div>
-
-    <script type="module">
-        const storedContent = localStorage.getItem('widgetContent');
-        console.log(storedContent);
-        if (storedContent) {
-            document.getElementById('wg-api-football-standings').innerHTML = storedContent;
-        } 
-    </script>
-</body>
-
-</html>
+</div>

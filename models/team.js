@@ -1,14 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const teamSchema = new mongoose.Schema({
-    team: {
-        id: Number,
-        name: String,
-        logo: String,
-        code: String,
-        country: String,
-        founded: Number,
+const teamSchema = new Schema({
+    id: Number,
+    name: String,
+    logo: String,
+    code: String,
+    country: String,
+    flag: String,
+    founded: Number,
+    league: {
+        type: Schema.Types.ObjectId,
+        ref: 'League'
     },
     venue: {
         name: String,
@@ -18,13 +21,8 @@ const teamSchema = new mongoose.Schema({
         image: String
     },
     coach: {
-        firstname: String,
-        lastname: String,
-        age: Number,
-        nationality: String,
-        height: String,
-        weight: String,
-        photo: String
+        type: Schema.Types.ObjectId,
+        ref: 'Coach'
     },
     squad: [
         {

@@ -5,17 +5,16 @@
         <div class="card mb-3">
             <div class="row g-0">
                 <div class="col-md-2">
-                    <img src="<%= team.team.logo %>" class="img-fluid rounded-start p-4"
-                        alt="Image of <%= team.team.name %>"
+                    <img src="<%= team.logo %>" class="img-fluid rounded-start p-4" alt="Image of <%= team.name %>"
                         style="width: 225px; border-right: 1px solid rgb(128,128,128,0.5)">
                 </div>
                 <div class="col-md-10">
                     <div class="card-body">
-                        <h5 class="card-title"><%= team.team.name %></h5>
-                        <p class="card-text">Abbreviation: <%= team.team.code %></p>
-                        <p class="card-text">Founded: <%= team.team.founded %></p>
-                        <p class="card-text">League:</p>
-                        <p class="card-text">Country: <%= team.team.country %></p>
+                        <h5 class="card-title"><%= team.name %></h5>
+                        <p class="card-text">Abbreviation: <%= team.code %></p>
+                        <p class="card-text">Founded: <%= team.founded %></p>
+                        <p class="card-text">League: <%= team.league.name %></p>
+                        <p class="card-text">Country: <%= team.country %></p>
                     </div>
                 </div>
             </div>
@@ -33,8 +32,6 @@
                         <h5 class="card-title"><%= `${team.coach.firstname} ${team.coach.lastname}` %></h5>
                         <p class="card-text">Age: <%= team.coach.age %></p>
                         <p class="card-text">Nationality: <%= team.coach.nationality %></p>
-                        <p class="card-text">Height: <%= team.coach.height || 'Unknown' %></p>
-                        <p class="card-text">Weight: <%= team.coach.weight || 'Unknown' %></p>
                     </div>
                 </div>
             </div>
@@ -55,6 +52,7 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <h2>Squad</h2>
     <div class="accordion mb-3" id="accordionPanelsStayOpenExample">
