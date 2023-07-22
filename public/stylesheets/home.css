@@ -1,3 +1,4 @@
-.league-table {
-    border: 1px solid black;
+.fixture-container {
+    border: 1px solid gray;
+    border-radius: 0.6em;
 }

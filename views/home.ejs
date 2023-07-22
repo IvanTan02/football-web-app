@@ -1,8 +1,8 @@
 <% layout('layouts/boilerplate') %>
 
-<h1>Premier League Table</h1>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6 me-5">
+        <h2>Premier League Table</h2>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -34,5 +34,30 @@
                 <% } %>
             </tbody>
         </table>
+    </div>
+    <div class="col-md-5">
+        <h2>Matchweek <%= fixtures[0].round.substring(16,18) %> Fixtures</h2>
+        <div class="container">
+            <div class="overflow-auto" style="max-height: 900px;">
+                <% for (let fixture of fixtures) { %>
+                <div class="fixture-container row mb-3 m-3 pt-3">
+                    <div class="col-4 text-center">
+                        <img src="<%= fixture.teams.home.logo %>" alt="" style="height: 75px; width: 75px">
+                        <p><%= fixture.teams.home.name %></p>
+                    </div>
+                    <div class="col-4 text-center">
+                        <h5><%= fixture.goals.home %> - <%= fixture.goals.away %></h5>
+                        <p><%= fixture.matchDate %></p>
+                        <p><%= fixture.matchTime %></p>
+                        <p><%= fixture.status.long %></p>
+                    </div>
+                    <div class="col-4 text-center">
+                        <img src="<%= fixture.teams.away.logo %>" alt="" style="height: 75px; width: 75px">
+                        <p><%= fixture.teams.away.name %></p>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
     </div>
 </div>

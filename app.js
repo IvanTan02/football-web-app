@@ -6,6 +6,8 @@ const ejsMate = require('ejs-mate');
 const leagueController = require('./controllers/leagueController');
 const teamController = require('./controllers/teamController');
 
+const { regularScheduler, fixtureScheduler } = require('./utilities/api/reqScheduler');
+
 const dbUrl = 'mongodb://localhost:27017/football-app'
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
@@ -18,6 +20,8 @@ db.once('open', () => {
 })
 
 const app = express();
+// fixtureScheduler();
+regularScheduler();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))

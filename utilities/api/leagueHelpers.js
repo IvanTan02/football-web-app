@@ -3,18 +3,13 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const axios = require('axios');
 
-const LastReqDates = require('../../models/lastReqDates');
 const League = require('../../models/league');
 const Team = require('../../models/team');
 
-const { makeReqObject, hasMonthsPassed } = require('./apiHelpers');
-const currentDate = new Date();
+const { makeReqObject } = require('./apiHelpers');
 
 module.exports.requestStandings = async () => {
     try {
-        const lastReqDate = await LastReqDates.findOne();
-
-        // if (!lastReqDate.lastStandingReq || hasMonthsPassed(lastReqDate.lastStandingReq, currentDate, 1)) {
         const options = makeReqObject('/standings', { league: '39', season: '2023' });
         const result = await axios(options);
         const response = result.data.response[0].league;
@@ -32,16 +27,6 @@ module.exports.requestStandings = async () => {
 
         }
         await league.save();
-
-        //     if (lastReqDate) {
-        //         lastReqDate.lastStandingReq = currentDate;
-        //         await lastReqDate.save();
-        //     } else {
-        //         await LastReqDates.create({ lastStandingReq: currentDate });
-        //     }
-        // } else {
-        //     console.log('Request already executed this month. Skipping...');
-        // }
     } catch (e) {
         console.log(e);
     }
