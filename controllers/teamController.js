@@ -4,7 +4,6 @@ const { requestPLTeams, requestCoach, requestSquad } = require('../utilities/api
 
 module.exports.teamsIndex = async (req, res) => {
     // await requestPLTeams();
-    haiz();
     const teams = await Team.find({});
     res.render('teams/index', { teams });
 }

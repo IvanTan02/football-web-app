@@ -1,63 +1,91 @@
 <% layout('layouts/boilerplate') %>
 
 <div class="row">
-    <div class="col-md-6 me-5">
-        <h2>Premier League Table</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="text-center" scope="col">Position</th>
-                    <th scope="col">Team</th>
-                    <th scope="col">P</th>
-                    <th scope="col">W</th>
-                    <th scope="col">D</th>
-                    <th scope="col">L</th>
-                    <th scope="col">GF</th>
-                    <th scope="col">GA</th>
-                    <th scope="col">GD</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% for(position of league.standings) { %>
-                <tr>
-                    <th class="text-center" scope="row"><%= position.rank %></th>
-                    <td><img src="<%= position.team.logo %>" alt="" style="height: 25px; width: 25px"
-                            class="me-1"><%= position.team.name %></td>
-                    <td><%= position.all.played %></td>
-                    <td><%= position.all.win %></td>
-                    <td><%= position.all.draw %></td>
-                    <td><%= position.all.lose %></td>
-                    <td><%= position.all.goals.for %></td>
-                    <td><%= position.all.goals.against %></td>
-                    <td><%= position.goalsDiff %></td>
-                </tr>
-                <% } %>
-            </tbody>
-        </table>
-    </div>
-    <div class="col-md-5">
-        <h2>Matchweek <%= fixtures[0].round.substring(16,18) %> Fixtures</h2>
-        <div class="container">
-            <div class="overflow-auto" style="max-height: 900px;">
-                <% for (let fixture of fixtures) { %>
-                <div class="fixture-container row mb-3 m-3 pt-3">
-                    <div class="col-4 text-center">
-                        <img src="<%= fixture.teams.home.logo %>" alt="" style="height: 75px; width: 75px">
-                        <p><%= fixture.teams.home.name %></p>
-                    </div>
-                    <div class="col-4 text-center">
-                        <h5><%= fixture.goals.home %> - <%= fixture.goals.away %></h5>
-                        <p><%= fixture.matchDate %></p>
-                        <p><%= fixture.matchTime %></p>
-                        <p><%= fixture.status.long %></p>
-                    </div>
-                    <div class="col-4 text-center">
-                        <img src="<%= fixture.teams.away.logo %>" alt="" style="height: 75px; width: 75px">
-                        <p><%= fixture.teams.away.name %></p>
-                    </div>
-                </div>
-                <% } %>
-            </div>
+  <div class="col-md-6 me-5">
+    <h2>Premier League Table</h2>
+    <table class="table table-striped" id="league-table">
+      <thead>
+        <tr>
+          <th class="text-center" scope="col">Position</th>
+          <th scope="col">Team</th>
+          <th scope="col">P</th>
+          <th scope="col">W</th>
+          <th scope="col">D</th>
+          <th scope="col">L</th>
+          <th scope="col">GF</th>
+          <th scope="col">GA</th>
+          <th scope="col">GD</th>
+          <th scope="col">Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(position of league.standings) { %>
+        <tr>
+          <th class="text-center" scope="row"><%= position.rank %></th>
+          <td>
+            <img
+              src="<%= position.team.logo %>"
+              alt=""
+              style="height: 25px; width: 25px"
+              class="me-1"
+            /><%= position.team.name %>
+          </td>
+          <td><%= position.all.played %></td>
+          <td><%= position.all.win %></td>
+          <td><%= position.all.draw %></td>
+          <td><%= position.all.lose %></td>
+          <td><%= position.all.goals.for %></td>
+          <td><%= position.all.goals.against %></td>
+          <td><%= position.goalsDiff %></td>
+          <td><%= position.points %></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-5">
+    <h2>Matchweek <%= fixtures[0].round.substring(16,18) %> Fixtures</h2>
+    <div class="container">
+      <div class="overflow-auto" style="max-height: 900px">
+        <% for (let fixture of fixtures) { %>
+        <div
+          class="fixture-container row mb-3 m-3 pt-3"
+          id="fixture-<%= fixture._id %>"
+        >
+          <div class="col-4 text-center">
+            <img
+              src="<%= fixture.teams.home.logo %>"
+              alt=""
+              style="height: 75px; width: 75px"
+            />
+            <p><%= fixture.teams.home.name %></p>
+          </div>
+          <div class="col-4 text-center">
+            <h5>
+              <span id="home-goals"><%= fixture.goals.home %></span> -
+              <span id="away-goals"><%= fixture.goals.away %></span>
+            </h5>
+            <p><%= fixture.matchDate %></p>
+            <p><%= fixture.matchTime %></p>
+            <p id="match-status"><%= fixture.status.long %></p>
+          </div>
+          <div class="col-4 text-center">
+            <img
+              src="<%= fixture.teams.away.logo %>"
+              alt=""
+              style="height: 75px; width: 75px"
+            />
+            <p><%= fixture.teams.away.name %></p>
+          </div>
         </div>
+        <% } %>
+      </div>
     </div>
+  </div>
 </div>
+
+<script>
+  const fixtures = <%- JSON.stringify(fixtures) %>
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascripts/homeWS.js"></script>

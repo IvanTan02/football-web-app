@@ -24,7 +24,8 @@ module.exports.requestStandings = async () => {
             console.log(team._id)
             league.standings.push(leagueTable[i]);
             league.standings[i].team = team._id;
-
+            team.league = league._id;
+            await team.save();
         }
         await league.save();
     } catch (e) {
