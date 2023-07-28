@@ -1,188 +1,205 @@
 <% layout('layouts/boilerplate') %>
 <div class="row">
-    <div class="col-md-8">
-        <h2>Club Information</h2>
-        <div class="card mb-3">
-            <div class="row g-0">
-                <div class="col-md-2">
-                    <img src="<%= team.logo %>" class="img-fluid rounded-start p-4" alt="Image of <%= team.name %>"
-                        style="width: 225px; border-right: 1px solid rgb(128,128,128,0.5)">
-                </div>
-                <div class="col-md-10">
-                    <div class="card-body">
-                        <h5 class="card-title"><%= team.name %></h5>
-                        <p class="card-text">Abbreviation: <%= team.code %></p>
-                        <p class="card-text">Founded: <%= team.founded %></p>
-                        <p class="card-text">League: <%= team.league.name %></p>
-                        <p class="card-text">Country: <%= team.country %></p>
-                    </div>
-                </div>
-            </div>
+  <div class="col-md-8">
+    <h2>Club Information</h2>
+    <div class="card mb-3">
+      <div class="row g-0">
+        <div class="col-md-2">
+          <img
+            src="<%= team.logo %>"
+            class="img-fluid rounded-start p-4"
+            alt="Image of <%= team.name %>"
+            style="width: 225px; border-right: 1px solid rgb(128, 128, 128, 0.5)"
+          />
         </div>
-        <h2>Manager</h2>
-        <div class="card">
-            <div class="row g-0">
-                <div class="col-md-2">
-                    <img src="<%= team.coach.photo %>" class="img-fluid rounded-start p-4"
-                        alt="Image of <%= `${team.coach.firstname} ${team.coach.lastname}`%>"
-                        style="width: 400px; border-right: 1px solid rgb(128,128,128,0.5)">
-                </div>
-                <div class="col-md-10">
-                    <div class="card-body">
-                        <h5 class="card-title"><%= `${team.coach.firstname} ${team.coach.lastname}` %></h5>
-                        <p class="card-text">Age: <%= team.coach.age %></p>
-                        <p class="card-text">Nationality: <%= team.coach.nationality %></p>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-10">
+          <div class="card-body">
+            <h5 class="card-title"><%= team.name %></h5>
+            <p class="card-text">Abbreviation: <%= team.code %></p>
+            <p class="card-text">Founded: <%= team.founded %></p>
+            <p class="card-text">League: <%= team.league.name %></p>
+            <p class="card-text">Country: <%= team.country %></p>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="col-md-4">
-        <h2>Homeground</h2>
-        <div class="card">
-            <img src="<%= team.venue.image %>" class="card-img-top" alt="Image of <%= team.venue.name %>">
-            <div class="card-body">
-                <h5 class="card-title"><%= team.venue.name %></h5>
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">City: <%= team.venue.city %></li>
-                <li class="list-group-item">Capacity: <%= team.venue.capacity %></li>
-                <li class="list-group-item">Address: <%= team.venue.address %></li>
-            </ul>
+    <h2>Coaches</h2>
+    <% for (let coach of team.coaches) { %>
+    <div class="card">
+      <div class="row g-0">
+        <div class="col-md-2">
+          <img
+            src="<%= coach.photo %>"
+            class="img-fluid rounded-start p-4"
+            alt="Image of <%= `${coach.firstname} ${coach.lastname}`%>"
+            style="width: 400px; border-right: 1px solid rgb(128, 128, 128, 0.5)"
+          />
         </div>
+        <div class="col-md-10">
+          <div class="card-body">
+            <h5 class="card-title"><%= `${coach.firstname} ${coach.lastname}` %></h5>
+            <p class="card-text">Age: <%= coach.age %></p>
+            <p class="card-text">Nationality: <%= coach.nationality %></p>
+          </div>
+        </div>
+      </div>
     </div>
+    <% } %>
+  </div>
+  <div class="col-md-4">
+    <h2>Homeground</h2>
+    <div class="card">
+      <img src="<%= team.venue.image %>" class="card-img-top" alt="Image of <%= team.venue.name %>" />
+      <div class="card-body">
+        <h5 class="card-title"><%= team.venue.name %></h5>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">City: <%= team.venue.city %></li>
+        <li class="list-group-item">Capacity: <%= team.venue.capacity %></li>
+        <li class="list-group-item">Address: <%= team.venue.address %></li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 <div class="row">
-    <h2>Squad</h2>
-    <div class="accordion mb-3" id="accordionPanelsStayOpenExample">
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                    aria-controls="panelsStayOpen-collapseOne">
-                    Goalkeepers
-                </button>
-            </h2>
-            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
-                <div class="accordion-body">
-                    <div class="row row-cols-2 row-cols-md-5">
-                        <% for(player of team.squad) { %>
-                        <% if (player.position === 'Goalkeeper') { %>
-                        <div class="col">
-                            <div class="card mb-3" style="width: 220px">
-                                <img src="<%= player.photo %>" class="card-img-top py-2"
-                                    alt="Image of <%= player.name %>">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= player.name %></h5>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Squad Number: <%= player.number %></li>
-                                    <li class="list-group-item">Age: <%= player.age %></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <% } %>
-                        <% } %>
-                    </div>
+  <h2>Squad</h2>
+  <div class="accordion mb-3" id="accordionPanelsStayOpenExample">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button
+          class="accordion-button"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseOne"
+          aria-expanded="true"
+          aria-controls="panelsStayOpen-collapseOne"
+        >
+          Goalkeepers
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+        <div class="accordion-body">
+          <div class="row row-cols-2 row-cols-md-5">
+            <% for(player of team.squad) { %> <% if (player.position === 'Goalkeeper') { %>
+            <div class="col">
+              <div class="card mb-3" style="width: 220px">
+                <img src="<%= player.photo %>" class="card-img-top py-2" alt="Image of <%= player.name %>" />
+                <div class="card-body">
+                  <h5 class="card-title"><%= player.name %></h5>
                 </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Squad Number: <%= player.number %></li>
+                  <li class="list-group-item">Age: <%= player.age %></li>
+                </ul>
+              </div>
             </div>
+            <% } %> <% } %>
+          </div>
         </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
-                    aria-controls="panelsStayOpen-collapseTwo">
-                    Defenders
-                </button>
-            </h2>
-            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
-                <div class="accordion-body">
-                    <div class="row row-cols-2 row-cols-md-5">
-                        <% for(player of team.squad) { %>
-                        <% if (player.position === 'Defender') { %>
-                        <div class="col">
-                            <div class="card mb-3" style="width: 220px">
-                                <img src="<%= player.photo %>" class="card-img-top py-2"
-                                    alt="Image of <%= player.name %>">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= player.name %></h5>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Squad Number: <%= player.number %></li>
-                                    <li class="list-group-item">Age: <%= player.age %></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <% } %>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
-                    aria-controls="panelsStayOpen-collapseThree">
-                    Midfielders
-                </button>
-            </h2>
-            <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
-                <div class="accordion-body">
-                    <div class="row row-cols-2 row-cols-md-5">
-                        <% for(player of team.squad) { %>
-                        <% if (player.position === 'Midfielder') { %>
-                        <div class="col">
-                            <div class="card mb-3" style="width: 220px">
-                                <img src="<%= player.photo %>" class="card-img-top py-2"
-                                    alt="Image of <%= player.name %>">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= player.name %></h5>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Squad Number: <%= player.number %></li>
-                                    <li class="list-group-item">Age: <%= player.age %></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <% } %>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false"
-                    aria-controls="panelsStayOpen-collapseFour">
-                    Forwards
-                </button>
-            </h2>
-            <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse">
-                <div class="accordion-body">
-                    <div class="row row-cols-2 row-cols-md-5">
-                        <% for(player of team.squad) { %>
-                        <% if (player.position === 'Attacker') { %>
-                        <div class="col">
-                            <div class="card mb-3" style="width: 220px">
-                                <img src="<%= player.photo %>" class="card-img-top py-2"
-                                    alt="Image of <%= player.name %>">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= player.name %></h5>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Squad Number: <%= player.number %></li>
-                                    <li class="list-group-item">Age: <%= player.age %></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <% } %>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseTwo"
+          aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseTwo"
+        >
+          Defenders
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <div class="row row-cols-2 row-cols-md-5">
+            <% for(player of team.squad) { %> <% if (player.position === 'Defender') { %>
+            <div class="col">
+              <div class="card mb-3" style="width: 220px">
+                <img src="<%= player.photo %>" class="card-img-top py-2" alt="Image of <%= player.name %>" />
+                <div class="card-body">
+                  <h5 class="card-title"><%= player.name %></h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Squad Number: <%= player.number %></li>
+                  <li class="list-group-item">Age: <%= player.age %></li>
+                </ul>
+              </div>
+            </div>
+            <% } %> <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseThree"
+          aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseThree"
+        >
+          Midfielders
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <div class="row row-cols-2 row-cols-md-5">
+            <% for(player of team.squad) { %> <% if (player.position === 'Midfielder') { %>
+            <div class="col">
+              <div class="card mb-3" style="width: 220px">
+                <img src="<%= player.photo %>" class="card-img-top py-2" alt="Image of <%= player.name %>" />
+                <div class="card-body">
+                  <h5 class="card-title"><%= player.name %></h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Squad Number: <%= player.number %></li>
+                  <li class="list-group-item">Age: <%= player.age %></li>
+                </ul>
+              </div>
+            </div>
+            <% } %> <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseFour"
+          aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseFour"
+        >
+          Forwards
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <div class="row row-cols-2 row-cols-md-5">
+            <% for(player of team.squad) { %> <% if (player.position === 'Attacker') { %>
+            <div class="col">
+              <div class="card mb-3" style="width: 220px">
+                <img src="<%= player.photo %>" class="card-img-top py-2" alt="Image of <%= player.name %>" />
+                <div class="card-body">
+                  <h5 class="card-title"><%= player.name %></h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Squad Number: <%= player.number %></li>
+                  <li class="list-group-item">Age: <%= player.age %></li>
+                </ul>
+              </div>
+            </div>
+            <% } %> <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

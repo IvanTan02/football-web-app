@@ -1,69 +1,55 @@
 const cron = require('node-cron');
 
-const { addNewFixtures,
-    updateFixtures,
-    getTodaysFixtures,
-    getEarliestFixtureTime,
-    getLatestFixtureTime,
-    getCurrentRound } = require('./fixtureHelper');
-const { reqStandings } = require('./leagueHelpers');
+const { updateFixtures, getTodaysFixtures, getEarliestFixtureTime, getLatestFixtureTime, getCurrentRound } = require('./fixtureHelper');
+const { requestStandings } = require('./leagueHelpers');
+const { renderHomePage } = require('../../controllers/leagueController');
 
-let regularSchedulerTask;
+let dailySchedulerTask;
 
-module.exports.regularScheduler = () => {
-
-    if (regularSchedulerTask) {
-        regularSchedulerTask.stop();
-        regularSchedulerTask.destroy();
+module.exports.dailyScheduler = () => {
+    if (dailySchedulerTask) {
+        dailySchedulerTask.stop();
+        dailySchedulerTask.destroy();
     }
-
-    regularSchedulerTask = cron.schedule('0 0 * * * *', async () => {
-        const todaysFixtures = await getTodaysFixtures('2023-08-12');
+    // Run everyday at 12am
+    dailySchedulerTask = cron.schedule("0 0 * * * *", async () => {
+        // Check if there is any fixtures today
+        const todaysFixtures = await getTodaysFixtures("2023-08-12");
         if (todaysFixtures.length !== 0) {
             const startTime = getEarliestFixtureTime(todaysFixtures);
-            const endTime = getLatestFixtureTime(todaysFixtures) + 1000 * 60 * 60 * 3;
-            const round = getCurrentRound();
-            // run scheduler
-            console.log('Today is a matchday.... Running fixture scheduler')
-            await fixtureScheduler(startTime, endTime, round, standingScheduler);
-        } else {
-            console.log('Today is not matchday....')
-            // Check if matchweek is over
-            if (allFixturesPassed()) {
-                const newRound = getCurrentRound() + 1;
-                await addNewFixtures(newRound);
-            }
-        }
-    }, {
-        scheduled: true,
-        timezone: 'Asia/Kuala_Lumpur'
-    })
-}
+            const endTime = getLatestFixtureTime(todaysFixtures) + 1000 * 60 * 60 * 2.5;
+            const round = todaysFixtures[0].round // Get the  current round
 
-const fixtureScheduler = async (startTime, endTime, round, standingScheduler) => {
-    const intervalTime = 1000 * 60 * 60; // 1 hour interval
+            // Run fixture scheduler
+            console.log(`Today is a matchday of gameweek ${round}.... Running fixture scheduler`);
+            await fixtureScheduler(startTime, endTime, round, requestStandings);
+        }
+    },
+        {
+            scheduled: true,
+            timezone: "Asia/Kuala_Lumpur",
+        }
+    );
+};
+
+const fixtureScheduler = async (startTime, endTime, round, requestStandings) => {
+    const intervalTime = 1000 * 60 * 30; // 30 minute call interval
     const startDelay = startTime - Date.now();
 
     setTimeout(async () => {
         const interval = setInterval(async () => {
-            console.log('Making request to API ------');
+            console.log("Making request to Fixtures Endpoint ------");
             await updateFixtures(round);
 
             if (Date.now() >= endTime) {
-                console.log('Fixture scheduler stopped at', endTime);
+                console.log("Fixture scheduler stopped at", endTime);
                 clearInterval(interval);
-                if (typeof standingScheduler === 'function') {
-                    await standingScheduler();
+                if (typeof requestStandings === "function") {
+                    await requestStandings();
                 }
             }
         }, intervalTime);
 
-        console.log('Task started at', startTime);
+        console.log("Fixture scheduler started at", startTime);
     }, startDelay);
-}
-
-// Run after the fixtureScheduler has finished running
-const standingScheduler = async () => {
-    await reqStandings();
-}
-
+};

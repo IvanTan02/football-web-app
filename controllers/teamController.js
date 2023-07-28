@@ -10,7 +10,7 @@ module.exports.teamsIndex = async (req, res) => {
 
 module.exports.showTeam = async (req, res) => {
     const { id } = req.params;
-    const team = await Team.findById(id).populate('league').populate('coach').populate('squad');
+    const team = await Team.findById(id).populate('league').populate('coaches').populate('squad');
     // await requestCoach(team);
     // await requestSquad(team);
     res.render('teams/details', { team })

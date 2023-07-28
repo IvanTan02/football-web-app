@@ -5,9 +5,6 @@ const reqDateSchema = new Schema({
     lastTeamsReq: {
         type: Date,
     },
-    lastStandingReq: {
-        type: Date
-    },
     lastCoachReq: {
         type: Date
     },

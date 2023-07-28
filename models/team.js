@@ -20,10 +20,12 @@ const teamSchema = new Schema({
         capacity: Number,
         image: String
     },
-    coach: {
-        type: Schema.Types.ObjectId,
-        ref: 'Coach'
-    },
+    coaches: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Coach'
+        }
+    ],
     squad: [
         {
             type: Schema.Types.ObjectId,

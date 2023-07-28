@@ -7,7 +7,7 @@ const http = require('http');
 const leagueController = require('./controllers/leagueController');
 const teamController = require('./controllers/teamController');
 
-const { regularScheduler, fixtureScheduler } = require('./utilities/api/reqScheduler');
+const { dailyScheduler, fixtureScheduler } = require('./utilities/api/reqScheduler');
 const { setupWebSocketServer } = require('./services/websocket');
 
 const dbUrl = 'mongodb://127.0.0.1:27017/football-app'
