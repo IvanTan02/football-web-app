@@ -1,26 +1,25 @@
 <% layout('layouts/boilerplate') %>
 
-<h1>All Premier League Teams</h1>
+<h1 class="text-white mb-3">Premier League Teams</h1>
 <div class="row row-cols-2 row-cols-md-4">
-    <% for (let i = 0; i < teams.length; i++) { %>
-    <div class="col" id="team-<%= teams[i]._id %>">
-        <div class="card mb-3">
-            <img src="<%= teams[i].logo %>" class="card-img-top mx-auto d-block p-3 pb-0"
-                alt="Image of <%= teams[i].name %>">
-            <div class="card-body">
-                <h5 class="card-title text-center"><%= teams[i].name %></h5>
-                <div class="d-flex justify-content-center mt-3">
-                    <a href="/teams/<%= teams[i]._id %>" class="btn btn-outline-primary">View Team</a>
-                </div>
-            </div>
+  <% for (let i = 0; i < teams.length; i++) { %>
+  <div class="col" id="team-<%= teams[i]._id %>">
+    <div class="team-card card mb-3 p-3">
+      <img src="<%= teams[i].logo %>" class="card-img-top mx-auto d-block p-3 pb-0" alt="Image of <%= teams[i].name %>" />
+      <div class="card-body">
+        <h5 class="card-title text-center"><%= teams[i].name %></h5>
+        <div class="d-flex justify-content-center mt-3">
+          <a href="/teams/<%= teams[i]._id %>" class="btn btn-outline-primary">View Team</a>
         </div>
+      </div>
     </div>
-    <% } %>
+  </div>
+  <% } %>
 </div>
 
 <script>
-    // prettier-ignore
-    const teams = <%- JSON.stringify(teams) %> 
+  // prettier-ignore
+  const teams = <%- JSON.stringify(teams) %>
 </script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/javascripts/teamIndexWS.js"></script> 
+<script src="/javascripts/teamIndexWS.js"></script>

@@ -148,7 +148,7 @@ const getRoundsDates = (fixtures) => {
 };
 
 const getCurrentRound = (rounds) => {
-  const currentDate = new Date("2023-08-20T19:00:00.000Z");
+  const currentDate = new Date();
 
   for (let i = 0; i < rounds.length; i++) {
     const { startDate, endDate } = rounds[i];

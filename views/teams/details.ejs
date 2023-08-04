@@ -1,33 +1,28 @@
 <% layout('layouts/boilerplate') %>
 <div class="row">
-  <div class="col-md-8">
-    <h2>Club Information</h2>
-    <div class="card mb-3">
+  <div class="col-md-7">
+    <h2 class="text-white">Club Information</h2>
+    <div class="card mb-3 club-info">
       <div class="row g-0">
-        <div class="col-md-2">
-          <img
-            src="<%= team.logo %>"
-            class="img-fluid rounded-start p-4"
-            alt="Image of <%= team.name %>"
-            style="width: 225px; border-right: 1px solid rgb(128, 128, 128, 0.5)"
-          />
+        <div class="col-md-3">
+          <div class="d-flex">
+            <img src="<%= team.logo %>" class="img-fluid rounded-start p-4" alt="Image of <%= team.name %>" />
+          </div>
         </div>
-        <div class="col-md-10">
-          <div class="card-body">
+        <div class="col-md-9">
+          <div class="card-body d-flex flex-column justify-content-center" style="border: 1px solid blue; height: 100%">
             <h5 class="card-title"><%= team.name %></h5>
             <p class="card-text">Abbreviation: <%= team.code %></p>
             <p class="card-text">Founded: <%= team.founded %></p>
-            <p class="card-text">League: <%= team.league.name %></p>
-            <p class="card-text">Country: <%= team.country %></p>
           </div>
         </div>
       </div>
     </div>
-    <h2>Coaches</h2>
+    <h2 class="text-white">Coaches</h2>
     <% for (let coach of team.coaches) { %>
     <div class="card">
       <div class="row g-0">
-        <div class="col-md-2">
+        <div class="col-md-3">
           <img
             src="<%= coach.photo %>"
             class="img-fluid rounded-start p-4"
@@ -35,7 +30,7 @@
             style="width: 400px; border-right: 1px solid rgb(128, 128, 128, 0.5)"
           />
         </div>
-        <div class="col-md-10">
+        <div class="col-md-9">
           <div class="card-body">
             <h5 class="card-title"><%= `${coach.firstname} ${coach.lastname}` %></h5>
             <p class="card-text">Age: <%= coach.age %></p>
@@ -46,8 +41,8 @@
     </div>
     <% } %>
   </div>
-  <div class="col-md-4">
-    <h2>Homeground</h2>
+  <div class="col-md-5">
+    <h2 class="text-white">Homeground</h2>
     <div class="card">
       <img src="<%= team.venue.image %>" class="card-img-top" alt="Image of <%= team.venue.name %>" />
       <div class="card-body">
@@ -63,7 +58,7 @@
 </div>
 
 <div class="row">
-  <h2>Squad</h2>
+  <h2 class="text-white mt-3">Squad</h2>
   <div class="accordion mb-3" id="accordionPanelsStayOpenExample">
     <div class="accordion-item">
       <h2 class="accordion-header">
@@ -83,7 +78,7 @@
           <div class="row row-cols-2 row-cols-md-5">
             <% for(player of team.squad) { %> <% if (player.position === 'Goalkeeper') { %>
             <div class="col">
-              <div class="card mb-3" style="width: 220px">
+              <div class="card mb-3" style="width: 200px">
                 <img src="<%= player.photo %>" class="card-img-top py-2" alt="Image of <%= player.name %>" />
                 <div class="card-body">
                   <h5 class="card-title"><%= player.name %></h5>
@@ -117,7 +112,7 @@
           <div class="row row-cols-2 row-cols-md-5">
             <% for(player of team.squad) { %> <% if (player.position === 'Defender') { %>
             <div class="col">
-              <div class="card mb-3" style="width: 220px">
+              <div class="card mb-3" style="width: 200px">
                 <img src="<%= player.photo %>" class="card-img-top py-2" alt="Image of <%= player.name %>" />
                 <div class="card-body">
                   <h5 class="card-title"><%= player.name %></h5>
@@ -151,7 +146,7 @@
           <div class="row row-cols-2 row-cols-md-5">
             <% for(player of team.squad) { %> <% if (player.position === 'Midfielder') { %>
             <div class="col">
-              <div class="card mb-3" style="width: 220px">
+              <div class="card mb-3" style="width: 200px">
                 <img src="<%= player.photo %>" class="card-img-top py-2" alt="Image of <%= player.name %>" />
                 <div class="card-body">
                   <h5 class="card-title"><%= player.name %></h5>
@@ -185,7 +180,7 @@
           <div class="row row-cols-2 row-cols-md-5">
             <% for(player of team.squad) { %> <% if (player.position === 'Attacker') { %>
             <div class="col">
-              <div class="card mb-3" style="width: 220px">
+              <div class="card mb-3" style="width: 200px">
                 <img src="<%= player.photo %>" class="card-img-top py-2" alt="Image of <%= player.name %>" />
                 <div class="card-body">
                   <h5 class="card-title"><%= player.name %></h5>

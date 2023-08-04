@@ -1,4 +1,18 @@
-.fixture-container {
-    border: 1px solid gray;
-    border-radius: 0.6em;
+.fixture-box {
+  border: 1px solid gray;
+  border-radius: 0.6em;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.table-rounded {
+  border: 1px solid #dee2e6; /* Add default Bootstrap table border */
+  border-radius: 0.5em; /* Adjust the radius as per your preference */
+  overflow: hidden; /* Clip the rounded borders */
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 0.5em; /* Adjust the radius as per your preference */
+  overflow: hidden; /* Clip the rounded borders */
 }
