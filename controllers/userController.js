@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Team = require('../models/team');
 
 module.exports.renderRegForm = (req, res) => {
     res.render('users/register')
@@ -37,4 +38,9 @@ module.exports.logoutUser = (req, res) => {
         req.flash('success', 'Fuck off mate')
         res.redirect('/home')
     })
+}
+
+module.exports.renderAdminDashboard = async (req, res) => {
+    const teams = await Team.find({}).populate('league').populate('coaches').populate('squad');
+    res.render('users/admin', { teams })
 }

@@ -2,47 +2,47 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 const axios = require('axios');
-const mongoose = require('mongoose');
-const { ObjectId } = require('mongodb');
-
 const Team = require('../../models/team');
 const Player = require('../../models/player');
 const League = require('../../models/league');
 const Coach = require('../../models/coach');
-const LastReqDates = require('../../models/lastReqDates');
 
 const { makeReqObject, hasMonthsPassed } = require('./apiHelpers');
-const currentDate = new Date();
 
 module.exports.requestPLTeams = async () => {
     try {
-        const lastReqDate = await LastReqDates.findOne();
-        const currentDate = new Date();
-
-        // if (!lastReqDate || hasMonthsPassed(lastReqDate.lastTeamsReq, currentDate, 1)) {
         const options = makeReqObject('teams', { league: '39', season: '2023' });
         const result = await axios(options);
         const teams = result.data.response;
-        // const league = await League.findOne({ 'id': 39 });
+        const league = await League.findOne({ 'id': 39 });
+
+
+        const existingIdSet = new Set(existingTeams.map(team => team.id));
 
         for (let t of teams) {
-            const { id, name, code, country, founded, logo } = t.team;
-            const newTeam = new Team({ id, name, code, country, founded, logo });
-            newTeam.flag = 'https://media.api-sports.io/flags/gb.svg';
-            // newTeam.league = league._id;
-            newTeam.venue = t.venue;
-            await newTeam.save();
+            // Check if team is already in DB
+            if (existingIdSet.has(t.id)) {
+                const existingTeam = await Team.findById(t.id);
+                if (existingTeam) Object.assign(existingTeam, t);
+                await existingTeam.save();
+            } else {
+                const { id, name, code, country, founded, logo } = t.team;
+                const newTeam = new Team({ id, name, code, country, founded, logo });
+                newTeam.flag = 'https://media.api-sports.io/flags/gb.svg';
+                newTeam.league = league._id;
+                newTeam.venue = t.venue;
+                await newTeam.save();
+            }
         }
 
-        //     if (lastReqDate) {
-        //         lastReqDate.lastTeamsReq = currentDate;
-        //         await lastReqDate.save();
-        //     } else {
-        //         await LastReqDates.create({ lastTeamsReq: currentDate });
-        //     }
-        // } else {
-        //     console.log('Request already executed this month. Skipping...');
-        // }
+        // Remove teams that are no longer in the league
+        const updatedIdSet = new Set(teams.map(team => team.id));
+        for (let t of existingTeams) {
+            if (!updatedIdSet.has(t.id)) {
+                t.league = null;
+                await t.save();
+            }
+        }
     } catch (e) {
         console.log(e);
     }
@@ -104,8 +104,9 @@ module.exports.requestCoach = async (team) => {
             }
         }
     } catch (error) {
-        console.log(error);
+        return error;
     }
+    return 'Coach updation successful';
 }
 
 module.exports.requestSquad = async (team) => {
@@ -127,8 +128,9 @@ module.exports.requestSquad = async (team) => {
             await makeSquadChanges(team, players);
         }
     } catch (error) {
-        console.log(error);
+        return (error)
     }
+    return 'Squad updation successful'
 }
 
 const makeSquadChanges = async (team, squadFromAPI) => {

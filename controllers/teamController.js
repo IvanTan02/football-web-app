@@ -3,7 +3,6 @@ const Team = require('../models/team');
 const { requestPLTeams, requestCoach, requestSquad } = require('../utilities/api/teamHelpers');
 
 module.exports.teamsIndex = async (req, res) => {
-    // await requestPLTeams();
     const teams = await Team.find({});
 
     teams.sort((a, b) => {
@@ -14,21 +13,33 @@ module.exports.teamsIndex = async (req, res) => {
         if (teamA > teamB) return 1;
         return 0;
     })
-    req.flash('error', 'Damnn sonn')
-    // res.render('teams/index', { teams });
-    res.redirect('/register')
+    res.render('teams/index', { teams });
 }
 
 module.exports.showTeam = async (req, res) => {
     const { id } = req.params;
     const team = await Team.findById(id).populate('league').populate('coaches').populate('squad');
-    // await requestCoach(team);
-    // await requestSquad(team);
     res.render('teams/details', { team })
 }
 
-
-
-const haiz = async () => {
-    await Team.updateMany({}, { $unset: { fixtures: 1 } });
+module.exports.updateTeam = async (req, res) => {
+    const { teamId, updateOption } = req.body;
+    if (updateOption === 'Coaches') {
+        const team = await Team.findById(teamId).populate('coaches');
+        if (team) {
+            const message = await requestCoach(team)
+            res.send(message)
+        } else {
+            res.send('There was a problem finding this team');
+        }
+    }
+    if (updateOption === 'Squad') {
+        const team = await Team.findById(teamId).populate('squad');
+        if (team) {
+            const message = await requestSquad(team)
+            res.send(message)
+        } else {
+            res.send('There was a problem finding this team');
+        }
+    }
 }

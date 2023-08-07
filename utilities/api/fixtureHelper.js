@@ -39,18 +39,23 @@ module.exports.updateFixtures = async (matchweek) => {
     const result = await reqFixtures(matchweek);
     for (let f of result.data.response) {
       const { id } = f.fixture;
-      const fixture = await Fixture.findOne({ id });
+      const existingFixture = await Fixture.findOne({ id });
 
-      if (fixture) {
-        fixture.status = f.fixture.status;
-        fixture.goals = f.goals;
-        fixture.score = f.score;
-        await fixture.save();
+      if (existingFixture) {
+        existingFixture.status = f.fixture.status;
+        if (!f.goals.home || !f.goals.away) {
+          existingFixture.goals.home = 0;
+          existingFixture.goals.away = 0;
+        } else {
+          existingFixture.goals = f.goals;
+        }
+        await existingFixture.save();
       }
     }
   } catch (error) {
-    console.log("PROBLEM UPDATING FIXTURE: ", error);
+    return error.message;
   }
+  return 'Fixture updation successful'
 };
 
 module.exports.getTodaysFixtures = async (todaysDate) => {
@@ -117,7 +122,6 @@ module.exports.getRoundFixtures = (fixtures, round) => {
 
 const getRoundsDates = (fixtures) => {
   const roundsMap = new Map();
-  console.log(fixtures)
 
   for (const fixture of fixtures) {
     const round = fixture.round;

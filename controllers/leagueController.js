@@ -7,6 +7,7 @@ const moment = require("moment");
 const League = require("../models/league");
 const Fixture = require("../models/fixture");
 const { getRoundFixtures } = require("../utilities/api/fixtureHelper");
+const { requestStandings } = require('../utilities/api/leagueHelpers');
 
 module.exports.renderHomePage = async (req, res) => {
   const league = await League.findOne({}).populate("standings.team");
@@ -32,4 +33,9 @@ const assignDateTime = (fixtures) => {
     f.matchDate = moment(f.date).format("D MMMM YYYY");
     f.matchTime = moment(f.date).format("hh:mm A");
   }
+}
+
+module.exports.updateStandings = async (req, res) => {
+  const message = await requestStandings();
+  res.send(message)
 }

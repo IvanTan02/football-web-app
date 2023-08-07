@@ -1,0 +1,44 @@
+<% layout('layouts/boilerplate')%> <% if (currentUser && currentUser.isAdmin) { %>
+<div class="admin-controls col-8 offset-2 mb-3">
+  <h1 class="mb-4">Admin Dashboard</h1>
+  <div class="mb-4">
+    <h2>Team Controls</h2>
+    <!-- <button id="update-teams-btn" class="btn btn-primary">Update Teams</button> -->
+    <select id="team-select" class="form-select mb-2" aria-label="Default select example">
+      <option value="null" selected>Select Team to Edit</option>
+      <% for (let team of teams) { %>
+      <option value="<%= team._id %>"><%= team.name %></option>
+      <% } %>
+    </select>
+    <button id="update-coaches-btn" class="btn btn-primary">Update Coaches</button>
+    <button id="update-squads-btn" class="btn btn-primary">Update Squad</button>
+  </div>
+  <div class="mb-4">
+    <h2>League Controls</h2>
+    <div class="input-group mb-2">
+      <input
+        type="text"
+        id="matchweek"
+        class="form-control"
+        placeholder="Matchweek"
+        aria-label="Matchweek"
+      />
+      <button class="btn btn-primary" type="button" id="update-fixtures-btn">
+        Update Fixtures
+      </button>
+    </div>
+    <button id="update-standings-btn" class="btn btn-primary">Update Standings</button>
+  </div>
+</div>
+
+<div class="control-status col-8 offset-2">
+  <h3 class="mb-3">Update Status:</h3>
+  <p id="update-status"></p>
+</div>
+
+<script src="javascripts/adminControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<% } else { %>
+<h1>404</h1>
+<% } %>

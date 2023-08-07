@@ -14,24 +14,43 @@ module.exports.requestStandings = async () => {
         const result = await axios(options);
         const response = result.data.response[0].league;
         const { id, name, country, logo, flag, season } = response;
-        const league = new League({ id, name, country, logo, flag, season });
-        league.standings = [];
 
-        const leagueTable = response.standings[0];
-        for (let i = 0; i < leagueTable.length; i++) {
-            const team = await Team.findOne({ 'id': leagueTable[i].team.id });
-            console.log(team.name);
-            console.log(team._id)
-            league.standings.push(leagueTable[i]);
-            league.standings[i].team = team._id;
-            team.league = league._id;
-            await team.save();
+        const existingLeague = await League.findOne({ 'id': id });
+        if (existingLeague) {
+            const leagueTable = response.standings[0];
+            const updatedStandings = [];
+            for (let i = 0; i < leagueTable.length; i++) {
+                const team = await Team.findOne({ 'id': leagueTable[i].team.id });
+                console.log(team.name);
+                console.log(team._id)
+                updatedStandings.push(leagueTable[i]);
+                updatedStandings[i].team = team._id;
+            }
+            existingLeague.standings = updatedStandings;
+            existingLeague.save();
+        } else {
+            const league = new League({ id, name, country, logo, flag, season });
+            league.standings = [];
+
+            const leagueTable = response.standings[0];
+            for (let i = 0; i < leagueTable.length; i++) {
+                const team = await Team.findOne({ 'id': leagueTable[i].team.id });
+                console.log(team.name);
+                console.log(team._id)
+                league.standings.push(leagueTable[i]);
+                league.standings[i].team = team._id;
+                team.league = league._id;
+                await team.save();
+            }
+            await league.save();
         }
-        await league.save();
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        return error.message;
     }
+    return 'Standings updation successful'
 }
 
+// Destroy and reset everything when the new season is coming
+const resetLeague = () => { }
 
 

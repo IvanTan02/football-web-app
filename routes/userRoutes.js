@@ -19,4 +19,6 @@ router.route('/login')
 
 router.get('/logout', userController.logoutUser)
 
+router.get('/admin', userController.renderAdminDashboard)
+
 module.exports = router;
