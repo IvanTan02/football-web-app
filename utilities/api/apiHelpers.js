@@ -15,9 +15,23 @@ module.exports.makeReqObject = (endpoint, params) => {
     return reqObject;
 }
 
-module.exports.hasMonthsPassed = (lastDate, currentDate, timeInMonths) => {
-    const diffInMonths = (currentDate.getFullYear() - lastDate.getFullYear()) * 12 + (currentDate.getMonth() - lastDate.getMonth());
-    return diffInMonths >= timeInMonths;
+module.exports.createLogMessage = (message) => {
+    return `${getCurrentTimestamp()}: ${message}....`;
+}
+
+const getCurrentTimestamp = () => {
+    const currentDate = new Date();
+    const dateOptions = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        timeZone: 'Asia/Kuala_Lumpur',
+    }
+    return currentDate.toLocaleString('en-US', dateOptions);
 }
 
 module.exports.getTodaysDate = () => {

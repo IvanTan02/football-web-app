@@ -8,20 +8,17 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const passportLocal = require('passport-local');
 
-const { setLocalVariables } = require('./utilities/middleware');
-
 const User = require('./models/user');
 
-const leagueController = require('./controllers/leagueController');
-const teamController = require('./controllers/teamController');
-const fixtureController = require('./controllers/fixtureController');
-
 const userRoutes = require('./routes/userRoutes');
+const teamRoutes = require('./routes/teamRoutes');
+const homeRoutes = require('./routes/homeRoutes');
 
-const { dailyScheduler, fixtureScheduler } = require('./utilities/api/reqScheduler');
+const { setLocalVariables } = require('./utilities/middleware');
 const { setupWebSocketServer } = require('./services/websocket');
+const { dailyScheduler } = require('./utilities/api/reqScheduler');
 
-// Database Connection Config
+// DB CONNECTION
 const dbUrl = 'mongodb://127.0.0.1:27017/football-app';
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
@@ -33,23 +30,22 @@ db.once('open', () => {
     console.log('Database connected.');
 });
 
-// Server and Websocket
+// SERVER AND WEBSOCKET
 const app = express();
 const server = http.createServer(app);
 setupWebSocketServer(server);
 
-// Scheduled functions
-// dailyScheduler();
-
-// Middleware
+// SET VIEW ENGINE
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.engine('ejs', ejsMate);
 
+// MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// SESSION CONFIG
 const sessionConfig = {
     secret: 'dev',
     resave: false,
@@ -63,27 +59,23 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
-// Authentication
+// AUTHENTICATION
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new passportLocal(User.authenticate()));
-
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // STORE LOCAL VARIABLES
 app.use(setLocalVariables);
 
+// ROUTERS
 app.use('/', userRoutes);
+app.use('/home', homeRoutes)
+app.use('/teams', teamRoutes);
 
-app.get('/home', leagueController.renderHomePage);
-app.get('/teams', teamController.teamsIndex);
-app.get('/teams/:id', teamController.showTeam);
-
-app.put('/home/standings', leagueController.updateStandings);
-app.put('/home/fixtures', fixtureController.updateFixtures);
-app.put('/teams/:id/coaches', teamController.updateTeam);
-app.put('/teams/:id/squad', teamController.updateTeam);
+// RUN SCHEDULED FUNCTIONS
+dailyScheduler();
 
 server.listen(3000, () => {
     console.log('Server listening on port 3000');

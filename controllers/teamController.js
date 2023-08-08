@@ -1,8 +1,8 @@
 const Team = require('../models/team');
 
-const { requestPLTeams, requestCoach, requestSquad } = require('../utilities/api/teamHelpers');
+const { requestCoach, requestSquad } = require('../utilities/api/teamHelpers');
 
-module.exports.teamsIndex = async (req, res) => {
+module.exports.renderTeamsIndex = async (req, res) => {
     const teams = await Team.find({});
 
     teams.sort((a, b) => {
@@ -16,7 +16,7 @@ module.exports.teamsIndex = async (req, res) => {
     res.render('teams/index', { teams });
 }
 
-module.exports.showTeam = async (req, res) => {
+module.exports.renderTeamDetails = async (req, res) => {
     const { id } = req.params;
     const team = await Team.findById(id).populate('league').populate('coaches').populate('squad');
     res.render('teams/details', { team })

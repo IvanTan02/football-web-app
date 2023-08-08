@@ -3,8 +3,11 @@ const router = express.Router({ mergeParams: true });
 
 const teamController = require('../controllers/teamController');
 
-router.route('/teams')
-    .get(teamController.requestPLTeams);
+router.route('/')
+    .get(teamController.renderTeamsIndex);
 
-router.route('/teams/:id')
-    .get(teamController.showTeam);
+router.route('/:id')
+    .get(teamController.renderTeamDetails)
+    .put(teamController.updateTeam);
+
+module.exports = router;
