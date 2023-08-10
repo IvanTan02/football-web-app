@@ -52,10 +52,11 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // SESSION CONFIG
+const secret = process.env.SECRET || 'dev-secret';
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
-    // crypto: { secret }
+    crypto: { secret }
 });
 store.on('error', function (error) {
     console.log('Session store error', error)
@@ -64,7 +65,7 @@ store.on('error', function (error) {
 const sessionConfig = {
     store,
     name: 'session',
-    secret: 'dev',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
