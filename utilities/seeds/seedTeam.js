@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 
-const { requestCoach, requestSquad } = require("../api/teamHelpers");
+const { requestTeams, requestCoach, requestSquad } = require("../api/teamHelpers");
 const Team = require("../../models/team");
 
+// DB CONNECTION
 const dbUrl = "mongodb://0.0.0.0:27017/football-app";
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,

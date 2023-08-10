@@ -1,25 +1,51 @@
 <% layout('layouts/boilerplate') %>
-<div class="col-8 offset-2 text-white">
-  <h1 class="mb-3">Register</h1>
+<div class="col-6 offset-3 mt-5 styled-form box-shadow-rounded">
+  <h3 class="mb-4 title">Register</h3>
   <form action="/register" method="post" class="validated-form" novalidate>
-    <div class="mb-3">
-      <label class="form-label" for="username">Username:</label>
-      <input class="form-control" type="text" name="username" id="username" size="80" required />
+    <div class="form-floating mb-4">
+      <input
+        class="form-control"
+        type="text"
+        name="username"
+        id="username"
+        size="80"
+        placeholder="Username"
+        required
+      />
+      <label class="form-label" for="username">Username</label>
       <div class="valid-feedback">Looks good!</div>
       <div class="invalid-feedback">This field can't be empty</div>
     </div>
-    <div class="mb-3">
-      <label class="form-label" for="email">Email:</label>
-      <input class="form-control" type="email" name="email" id="email" size="80" required />
+    <div class="form-floating mb-4">
+      <input
+        class="form-control"
+        type="email"
+        name="email"
+        id="email"
+        size="80"
+        placeholder="Email"
+        required
+      />
+      <label class="form-label" for="email">Email</label>
       <div class="valid-feedback">Looks good!</div>
       <div class="invalid-feedback">This field can't be empty</div>
     </div>
-    <div class="mb-3">
-      <label class="form-label" for="password">Password:</label>
-      <input class="form-control" type="password" name="password" id="password" size="80" required />
+    <div class="form-floating mb-4">
+      <input
+        class="form-control"
+        type="password"
+        name="password"
+        id="password"
+        size="80"
+        placeholder="Password"
+        required
+      />
+      <label class="form-label" for="password">Password</label>
       <div class="valid-feedback">Looks good!</div>
       <div class="invalid-feedback">This field can't be empty</div>
     </div>
     <button class="btn btn-primary">Register</button>
   </form>
 </div>
+
+<script src="javascripts/formValidation.js"></script>

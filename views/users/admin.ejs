@@ -1,10 +1,10 @@
 <% layout('layouts/boilerplate')%> <% if (currentUser && currentUser.isAdmin) { %>
 <div class="admin-controls col-8 offset-2 mb-3">
-  <h1 class="mb-4">Admin Dashboard</h1>
+  <h3 class="mb-4 title">Admin Dashboard</h3>
   <div class="mb-4">
-    <h2>Team Controls</h2>
+    <h4 class="mb-3">Team Controls</h4>
     <!-- <button id="update-teams-btn" class="btn btn-primary">Update Teams</button> -->
-    <select id="team-select" class="form-select mb-2" aria-label="Default select example">
+    <select id="team-select" class="form-select mb-3" aria-label="Default select example">
       <option value="null" selected>Select Team to Edit</option>
       <% for (let team of teams) { %>
       <option value="<%= team._id %>"><%= team.name %></option>
@@ -14,8 +14,8 @@
     <button id="update-squads-btn" class="btn btn-primary">Update Squad</button>
   </div>
   <div class="mb-4">
-    <h2>League Controls</h2>
-    <div class="input-group mb-2">
+    <h4 class="mb-3">League Controls</h4>
+    <div class="input-group mb-3">
       <input
         type="text"
         id="matchweek"

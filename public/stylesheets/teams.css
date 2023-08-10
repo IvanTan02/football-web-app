@@ -1,8 +1,60 @@
-.card-img-top {
-  height: 130px;
-  width: 150px;
+.team-index-card .card-img-top {
+  height: 100px;
+  width: 120px;
 }
 
 .team-card {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgb(250, 250, 250);
+}
+
+.club-info img {
+  width: 150px;
+  height: 150px;
+  border-right: 1px solid rgba(169, 169, 169, 0.5);
+}
+
+.club-info .team-flag {
+  width: 22px;
+  height: 22px;
+}
+
+.club-info .card-body h5,
+.club-info .card-body p {
+  margin-bottom: 0.2em;
+}
+
+#coach-table thead tr th:first-child {
+  border-top-left-radius: 0.6em;
+}
+
+#coach-table thead tr th:last-child {
+  border-top-right-radius: 0.6em;
+}
+
+#coach-table thead tr th:first-child,
+#coach-table tbody tr td:first-child {
+  border-right: 1px solid rgba(169, 169, 169, 0.5);
+}
+
+#coach-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 0.6em;
+}
+
+#coach-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 0.6em;
+}
+
+#coach-table tbody td img {
+  width: 120px;
+  margin-right: -4.4em;
+}
+
+#coach-table .coach-details {
+  margin-top: 1em;
+  margin-left: 1em;
+}
+
+#coach-table .coach-details h5,
+#coach-table .coach-details p {
+  margin-bottom: 0.2em;
 }

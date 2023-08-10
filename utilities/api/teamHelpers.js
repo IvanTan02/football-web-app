@@ -7,15 +7,14 @@ const Player = require('../../models/player');
 const League = require('../../models/league');
 const Coach = require('../../models/coach');
 
-const { makeReqObject, hasMonthsPassed } = require('./apiHelpers');
+const { makeReqObject } = require('./apiHelpers');
 
-module.exports.requestPLTeams = async () => {
+module.exports.requestTeams = async () => {
     try {
         const options = makeReqObject('teams', { league: '39', season: '2023' });
         const result = await axios(options);
         const teams = result.data.response;
         const league = await League.findOne({ 'id': 39 });
-
 
         const existingIdSet = new Set(existingTeams.map(team => team.id));
 

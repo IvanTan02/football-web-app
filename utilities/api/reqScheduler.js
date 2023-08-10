@@ -15,25 +15,30 @@ module.exports.dailyScheduler = () => {
         dailySchedulerTask.destroy();
     }
     // Run everyday at 12am
-    dailySchedulerTask = cron.schedule("0 0 * * * *", async () => {
-        console.log(createLogMessage('Running daily scheduler'))
-        // Check if there is any fixtures today
-        const todaysDate = getTodaysDate();
-        const todaysFixtures = await getTodaysFixtures(todaysDate);
-        if (todaysFixtures.length !== 0) {
-            await processTodaysFixtures(todaysFixtures);
-        }
-    },
-        {
-            scheduled: true,
-            timezone: "Asia/Kuala_Lumpur",
-        }
-    );
+    try {
+        dailySchedulerTask = cron.schedule("0 0 * * *", async () => {
+            console.log(createLogMessage('Running daily scheduler'))
+            // Check if there is any fixtures today
+            const todaysDate = getTodaysDate();
+            const todaysFixtures = await getTodaysFixtures(todaysDate);
+            if (todaysFixtures.length !== 0) {
+                await processTodaysFixtures(todaysFixtures);
+            }
+        },
+            {
+                scheduled: true,
+                timezone: "Asia/Kuala_Lumpur",
+            }
+        );
+    } catch (error) {
+        console.log(error)
+    }
 };
 
 const processTodaysFixtures = async (todaysFixtures) => {
 
     console.log(createLogMessage('Grouping todays fixtures start times'))
+    console.log(todaysFixtures)
 
     // Group fixtures by start times 
     for (let fixture of todaysFixtures) {
@@ -43,6 +48,7 @@ const processTodaysFixtures = async (todaysFixtures) => {
         }
         fixturesByStartTime.get(startTime).push(fixture);
     }
+    console.log(fixturesByStartTime)
     await scheduleFixtureJobs(fixturesByStartTime);
 }
 
@@ -51,10 +57,19 @@ const scheduleFixtureJobs = async (fixturesByStartTime) => {
     console.log(createLogMessage('Scheduling jobs for each start time'))
 
     for (const [startTime, fixtureGroup] of fixturesByStartTime) {
-        const newJob = cron.schedule(new Date(startTime), async () => {
-            await processFixturesForStartTime(startTime, fixtureGroup);
-        })
-        scheduledFixtureJobs.set(startTime, newJob)
+        try {
+            const newJob = cron.schedule(getCronTime(startTime), async () => {
+                console.log(createLogMessage(`Scheduling jobs for ${startTime} `))
+                await processFixturesForStartTime(startTime, fixtureGroup);
+            },
+                {
+                    scheduled: true,
+                    timezone: "Asia/Kuala_Lumpur",
+                })
+            scheduledFixtureJobs.set(startTime, newJob)
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
 
@@ -85,11 +100,15 @@ const processFixturesForStartTime = async (startTime, fixtureGroup) => {
         }
 
         if (!recurringFixtureJobs.has(startTime)) {
-            const newJob = cron.schedule('*/5 * * * *', () => {
-                console.log(createLogMessage(`Calling fixtures at ${startTime} every 5 minutes`))
-                processFixturesForStartTime(startTime, fixtureGroup); // Call the function again for the current start time
-            });
-            recurringFixtureJobs.set(startTime, newJob);
+            try {
+                const newJob = cron.schedule('*/5 * * * *', () => {
+                    console.log(createLogMessage(`Calling fixtures at ${startTime} every 5 minutes`))
+                    processFixturesForStartTime(startTime, fixtureGroup); // Call the function again for the current start time
+                });
+                recurringFixtureJobs.set(startTime, newJob);
+            } catch (error) {
+                console.log(error)
+            }
         }
 
     } catch (error) {
@@ -101,13 +120,15 @@ const updateFixturesInGroup = async (fixtureGroup) => {
     const fixtureIds = fixtureGroup.map(fixture => fixture.id);
 
     // Extracting the current matchweek
-    const regex = /(\d+)/;
-    const match = fixtureGroup[0].round.match(regex);
-    if (match && match[1]) {
-        const matchweek = parseInt(match[1], 10);
-        console.log(createLogMessage(`Updating fixtures for ${matchweek}`))
-        await updateFixtures(matchweek, fixtureIds)
-    }
+    // const regex = /(\d+)/;
+    // const match = fixtureGroup[0].round.match(regex);
+    // if (match && match[1]) {
+    //     const matchweek = parseInt(match[1], 10);
+    //     console.log(createLogMessage(`Updating fixtures for ${matchweek}`))
+    //     // await updateFixtures(matchweek, fixtureIds)
+
+    // }
+    console.log(fixtureIds)
 }
 
 const areAllFixturesDone = () => {
@@ -119,3 +140,14 @@ const areAllFixturesDone = () => {
     }
     return true;
 }
+
+const getCronTime = (time) => {
+    const minute = new Date(time).getMinutes();
+    const hour = new Date(time).getHours();
+    return `${minute} ${hour} * * *`;
+}
+
+// setTimeout(() => {
+//     console.log('Scheduled Fixtures:')
+//     console.log(scheduledFixtureJobs)
+// }, 50000)

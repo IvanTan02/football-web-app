@@ -30,7 +30,7 @@ module.exports.renderHomePage = async (req, res) => {
 
 const assignDateTime = (fixtures) => {
   for (let f of fixtures) {
-    f.matchDate = moment(f.date).format("D MMMM YYYY");
+    f.matchDate = moment(f.date).format("D MMM YYYY");
     f.matchTime = moment(f.date).format("hh:mm A");
   }
 }

@@ -2,42 +2,40 @@
 
 <div class="row">
   <div class="col-md-6">
-    <!-- <div class="container"> -->
-    <h2 class="text-white mb-3">Current Fixtures</h2>
-    <!-- <div class="overflow-auto fixture-container" style="max-height: 950px"> -->
+    <div class="container" id="fixture-container">
+    <h4>Current Fixtures</h4>
     <% for (let fixture of currentFixtures) { %>
-    <div class="fixture-box row m-1 pt-3" id="fixture-<%= fixture._id %>">
-      <div class="col-4 text-center">
-        <img src="<%= fixture.teams.home.logo %>" alt="" style="height: 75px; width: 75px" />
+    <div class="row mb-2 fixture-box box-shadow-rounded" id="fixture-<%= fixture._id %>">
+      <div class="col-4 text-center d-flex flex-column align-items-center justify-content-center home-team">
+        <img src="<%= fixture.teams.home.logo %>" alt="" class="team-logo mb-1" />
         <p><%= fixture.teams.home.name %></p>
       </div>
-      <div class="col-4 text-center">
+      <div class="col-4 text-center d-flex flex-column align-items-center justify-content-center game-details">
+        <p id="match-status"><span class="badge rounded-pill purple-badge"><%= fixture.status.long %></span></p>
         <h5>
-          <span id="home-goals"><%= fixture.goals.home %></span> -
+          <span id="home-goals"><%= fixture.goals.home %></span> - 
           <span id="away-goals"><%= fixture.goals.away %></span>
         </h5>
         <p><%= fixture.matchDate %></p>
         <p><%= fixture.matchTime %></p>
-        <p id="match-status"><%= fixture.status.long %></p>
       </div>
-      <div class="col-4 text-center">
-        <img src="<%= fixture.teams.away.logo %>" alt="" style="height: 75px; width: 75px" />
+      <div class="col-4 text-center d-flex flex-column align-items-center justify-content-center away-team">
+        <img src="<%= fixture.teams.away.logo %>" alt="" class="team-logo mb-1" />
         <p><%= fixture.teams.away.name %></p>
       </div>
     </div>
     <% } %>
-    <!-- </div>
-    </div> -->
+    </div>
   </div>
 
   <div class="col-md-6">
-    <h2 class="text-white mb-3">Premier League Table</h2>
-    <div class="league-table-container rounded">
-      <table class="table table-striped" id="league-table">
+    <div id="league-table-container">
+      <h4>League Table</h4>
+      <table class="table box-shadow-rounded" id="league-table">
         <thead>
           <tr>
             <th class="text-center" scope="col">Pos</th>
-            <th scope="col">Team</th>
+            <th class="" scope="col">Team</th>
             <th class="text-center" scope="col">P</th>
             <th class="text-center" scope="col">W</th>
             <th class="text-center" scope="col">D</th>
@@ -49,12 +47,16 @@
           </tr>
         </thead>
         <tbody>
-          <% for(position of league.standings) { %>
+          <% for(const position of league.standings) { %>
           <tr>
-            <td class="text-center" scope="row"><%= position.rank %></td>
+            <td class="text-center" scope="row"><strong><%= position.rank %></strong></td>
             <td>
-              <img src="<%= position.team.logo %>" alt="" style="height: 25px; width: 25px" class="me-1" /><%= position.team.name
-              %>
+              <img
+                src="<%= position.team.logo %>"
+                alt=""
+                style="height: 25px; width: 25px"
+                class="me-1"
+              /><%= position.team.name %>
             </td>
             <td class="text-center"><%= position.all.played %></td>
             <td class="text-center"><%= position.all.win %></td>
@@ -66,6 +68,14 @@
             <td class="text-center"><strong><%= position.points %></strong></td>
           </tr>
           <% } %>
+          <tfoot>
+            <td colspan="10">
+              <span class="badge rounded-pill">Champions League</span>
+              <span class="badge rounded-pill">Europa League</span>
+              <span class="badge rounded-pill">Conference League</span>
+              <span class="badge rounded-pill">Relegation</span>
+            </td>
+          </tfoot>
         </tbody>
       </table>
     </div>

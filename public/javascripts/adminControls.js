@@ -28,7 +28,7 @@ updateFixturesBtn.addEventListener('click', () => {
     const data = {
         matchweek: matchweek.value
     }
-    makeAPIRequest('/home/fixtures', data);
+    makeAPIRequest('/fixtures', data);
 })
 
 const updateTeam = (updateOption) => {

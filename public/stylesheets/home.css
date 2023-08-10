@@ -1,18 +1,117 @@
+/* FIXTURE STYLES */
+#fixture-container h4 {
+  color: rgb(20, 20, 20);
+  border-bottom: 1px solid rgba(169, 169, 169, 0.5);
+  padding-bottom: 0.3em;
+  margin: 0.5em 0em;
+}
+
 .fixture-box {
-  border: 1px solid gray;
+  border: 1px solid rgba(169, 169, 169, 0.5);
   border-radius: 0.6em;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgb(250, 250, 250);
 }
 
-.table-rounded {
-  border: 1px solid #dee2e6; /* Add default Bootstrap table border */
-  border-radius: 0.5em; /* Adjust the radius as per your preference */
-  overflow: hidden; /* Clip the rounded borders */
+.fixture-box .team-logo {
+  height: 60px;
+  width: 60px;
 }
 
-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 0.5em; /* Adjust the radius as per your preference */
-  overflow: hidden; /* Clip the rounded borders */
+.fixture-box .game-details p {
+  font-size: 0.9em;
+  margin-bottom: 0.3em;
+}
+
+.fixture-box .game-details h5 {
+  font-size: 1.5em;
+}
+
+.fixture-box .home-team,
+.fixture-box .away-team {
+  padding: 1.1em 0em;
+}
+
+/* TABLE STYLES */
+#league-table-container h4 {
+  color: rgb(20, 20, 20);
+  border-bottom: 1px solid rgba(169, 169, 169, 0.5);
+  padding-bottom: 0.3em;
+  margin: 0.5em 0em;
+}
+
+/* TABLE HEAD STYLES */
+#league-table thead tr {
+  border-bottom: 1px solid rgba(169, 169, 169, 0.5);
+}
+
+#league-table thead tr th:first-child {
+  border-top-left-radius: 0.6em;
+}
+
+#league-table thead tr th:last-child {
+  border-top-right-radius: 0.6em;
+}
+
+#league-table thead tr th {
+  background-color: rgba(251, 251, 251, 0.8);
+}
+
+/* TABLE RANKING STYLES */
+#league-table tbody tr {
+  border-bottom: 1px solid rgba(169, 169, 169, 0.5);
+}
+
+#league-table tbody tr:nth-child(odd) td {
+  background-color: rgba(241, 241, 241, 0.8);
+}
+
+#league-table tbody tr:nth-child(even) td {
+  background-color: rgba(251, 251, 251, 0.8);
+}
+
+#league-table tbody tr:nth-child(-n + 4) td {
+  background-color: rgb(56, 195, 149, 0.1);
+}
+
+#league-table tbody tr:nth-child(5) td,
+#league-table tbody tr:nth-child(6) td {
+  background-color: rgba(255, 146, 4, 0.1);
+}
+
+#league-table tbody tr:nth-child(7) td {
+  background-color: rgba(190, 190, 44, 0.1);
+}
+
+#league-table tbody tr:nth-last-child(-n + 3) td {
+  background-color: rgb(210, 27, 39, 0.1);
+}
+
+/* TABLE FOOTER STYLES */
+#league-table tfoot tr td {
+  background-color: rgba(251, 251, 251, 0.8);
+}
+
+#league-table tfoot tr td:first-child {
+  border-bottom-left-radius: 0.6em;
+}
+
+#league-table tfoot tr td:last-child {
+  border-bottom-right-radius: 0.6em;
+}
+
+/* LEAGUE TABLE FOOTER PILLS */
+#league-table tfoot td .badge:nth-child(1) {
+  background-color: rgb(56, 195, 149, 0.8);
+}
+
+#league-table tfoot td .badge:nth-child(2) {
+  background-color: rgba(255, 146, 4, 0.8);
+}
+
+#league-table tfoot td .badge:nth-child(3) {
+  background-color: rgb(190, 190, 44, 0.8);
+}
+
+#league-table tfoot td .badge:nth-child(4) {
+  background-color: rgb(210, 27, 39, 0.8);
 }
