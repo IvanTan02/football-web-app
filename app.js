@@ -92,6 +92,11 @@ app.use('/', userRoutes);
 app.use('/home', homeRoutes)
 app.use('/teams', teamRoutes);
 
+// HEALTH CHECK ENDPOINT
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+})
+
 // RUN SCHEDULED FUNCTIONS
 dailyScheduler();
 
