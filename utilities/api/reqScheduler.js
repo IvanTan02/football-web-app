@@ -120,15 +120,13 @@ const updateFixturesInGroup = async (fixtureGroup) => {
     const fixtureIds = fixtureGroup.map(fixture => fixture.id);
 
     // Extracting the current matchweek
-    // const regex = /(\d+)/;
-    // const match = fixtureGroup[0].round.match(regex);
-    // if (match && match[1]) {
-    //     const matchweek = parseInt(match[1], 10);
-    //     console.log(createLogMessage(`Updating fixtures for ${matchweek}`))
-    //     // await updateFixtures(matchweek, fixtureIds)
-
-    // }
-    console.log(fixtureIds)
+    const regex = /(\d+)/;
+    const match = fixtureGroup[0].round.match(regex);
+    if (match && match[1]) {
+        const matchweek = parseInt(match[1], 10);
+        console.log(createLogMessage(`Updating fixtures for ${matchweek}`))
+        await updateFixtures(matchweek, fixtureIds)
+    }
 }
 
 const areAllFixturesDone = () => {

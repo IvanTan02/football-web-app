@@ -7,6 +7,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const passportLocal = require('passport-local');
+const MongoStore = require('connect-mongo');
 
 const User = require('./models/user');
 
@@ -18,8 +19,13 @@ const { setLocalVariables } = require('./utilities/middleware');
 const { setupWebSocketServer } = require('./services/websocket');
 const { dailyScheduler } = require('./utilities/api/reqScheduler');
 
+let dbUrl = process.env.MONGODB_CONNECT_STRING;
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+    dbUrl = 'mongodb://127.0.0.1:27017/football-app';
+}
+
 // DB CONNECTION
-const dbUrl = 'mongodb://127.0.0.1:27017/football-app';
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -46,7 +52,18 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // SESSION CONFIG
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    // crypto: { secret }
+});
+store.on('error', function (error) {
+    console.log('Session store error', error)
+});
+
 const sessionConfig = {
+    store,
+    name: 'session',
     secret: 'dev',
     resave: false,
     saveUninitialized: true,
