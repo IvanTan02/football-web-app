@@ -55,8 +55,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 const secret = process.env.SECRET || 'dev-secret';
 const store = MongoStore.create({
     mongoUrl: dbUrl,
+    secret,
     touchAfter: 24 * 60 * 60,
-    crypto: { secret }
 });
 store.on('error', function (error) {
     console.log('Session store error', error)
