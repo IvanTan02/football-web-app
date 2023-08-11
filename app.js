@@ -98,7 +98,11 @@ app.get('/health', (req, res) => {
 })
 
 // RUN SCHEDULED FUNCTIONS
-dailyScheduler();
+app.get('/scheduleTask', (req, res) => {
+    dailyScheduler();
+    res.status(200).send('OK');
+})
+
 
 server.listen(3000, () => {
     console.log('Server listening on port 3000');

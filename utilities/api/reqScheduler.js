@@ -4,34 +4,18 @@ const { updateFixtures, getTodaysFixtures } = require('./fixtureHelper');
 const { requestStandings } = require('./leagueHelpers');
 const { getTodaysDate, createLogMessage } = require('./apiHelpers');
 
-let dailySchedulerTask;
 let scheduledFixtureJobs = new Map();
 let recurringFixtureJobs = new Map();
 const fixturesByStartTime = new Map();
 
-module.exports.dailyScheduler = () => {
-    if (dailySchedulerTask) {
-        dailySchedulerTask.stop();
-        dailySchedulerTask.destroy();
-    }
+module.exports.dailyScheduler = async () => {
     // Run everyday at 12am
-    try {
-        dailySchedulerTask = cron.schedule("0 0 * * *", async () => {
-            console.log(createLogMessage('Running daily scheduler'))
-            // Check if there is any fixtures today
-            const todaysDate = getTodaysDate();
-            const todaysFixtures = await getTodaysFixtures(todaysDate);
-            if (todaysFixtures.length !== 0) {
-                await processTodaysFixtures(todaysFixtures);
-            }
-        },
-            {
-                scheduled: true,
-                timezone: "Asia/Kuala_Lumpur",
-            }
-        );
-    } catch (error) {
-        console.log(error)
+    console.log(createLogMessage('Running daily scheduler'))
+    // Check if there is any fixtures today
+    const todaysDate = getTodaysDate();
+    const todaysFixtures = await getTodaysFixtures(todaysDate);
+    if (todaysFixtures.length !== 0) {
+        await processTodaysFixtures(todaysFixtures);
     }
 };
 
