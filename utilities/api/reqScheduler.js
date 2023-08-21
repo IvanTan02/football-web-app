@@ -4,19 +4,27 @@ const { updateFixtures, getTodaysFixtures } = require('./fixtureHelper');
 const { requestStandings } = require('./leagueHelpers');
 const { getTodaysDate, createLogMessage } = require('./apiHelpers');
 
+const Fixture = require('../../models/fixture');
+
 let scheduledFixtureJobs = new Map();
 let recurringFixtureJobs = new Map();
 const fixturesByStartTime = new Map();
+const todaysDate = getTodaysDate();
 
-module.exports.dailyScheduler = async () => {
-    // Run everyday at 12am
-    console.log(createLogMessage('Running daily scheduler'))
-    // Check if there is any fixtures today
-    const todaysDate = getTodaysDate();
-    const todaysFixtures = await getTodaysFixtures(todaysDate);
-    if (todaysFixtures.length !== 0) {
-        await processTodaysFixtures(todaysFixtures);
-    }
+module.exports.dailyScheduler = () => {
+    cron.schedule('0 0 * * *', async () => {
+        // Run everyday at 12am
+        console.log(createLogMessage('Running daily scheduler'))
+        // Check if there is any fixtures today
+        const todaysFixtures = await getTodaysFixtures(todaysDate);
+        if (todaysFixtures.length !== 0) {
+            await processTodaysFixtures(todaysFixtures);
+        }
+    }, {
+        scheduled: true,
+        timezone: 'Asia/Kuala_Lumpur'
+    })
+
 };
 
 const processTodaysFixtures = async (todaysFixtures) => {
@@ -61,9 +69,16 @@ const processFixturesForStartTime = async (startTime, fixtureGroup) => {
     try {
         console.log(createLogMessage('Processing current start time fixtures'))
 
-        await updateFixturesInGroup(fixtureGroup)
+        const response = await updateFixturesInGroup(fixtureGroup);
+        const { updatedFixtures } = response;
 
-        const allFixturesFullTime = fixtureGroup.every((fixture) => fixture.status.long === 'Full Time');
+        // const updatedFixtures = [];
+        // for (let fixture of fixtureGroup) {
+        //     const foundFixture = await Fixture.findOne({ 'id': fixture.id });
+        //     if (foundFixture) updatedFixtures.push(foundFixture);
+        // }
+
+        const allFixturesFullTime = updatedFixtures.every((fixture) => fixture.status.long === 'Match Finished');
         if (allFixturesFullTime) {
             console.log(createLogMessage('Fixtures in current batch FT. Stopping jobs.'))
             if (recurringFixtureJobs.has(startTime)) {
@@ -76,18 +91,19 @@ const processFixturesForStartTime = async (startTime, fixtureGroup) => {
                 scheduledFixtureJobs.delete(startTime);
             }
 
-            if (areAllFixturesDone()) {
-                console.log(createLogMessage('All fixtures today done. Requesting standings'))
+            const allFixturesDone = await areAllFixturesDone();
+            if (allFixturesDone) {
+                console.log(createLogMessage('All fixtures at this time is done. Requesting standings'))
                 await requestStandings();
             }
-            return; // Stop the function for this start time
+            return;
         }
 
         if (!recurringFixtureJobs.has(startTime)) {
             try {
                 const newJob = cron.schedule('*/5 * * * *', () => {
                     console.log(createLogMessage(`Calling fixtures at ${startTime} every 5 minutes`))
-                    processFixturesForStartTime(startTime, fixtureGroup); // Call the function again for the current start time
+                    processFixturesForStartTime(startTime, fixtureGroup);
                 });
                 recurringFixtureJobs.set(startTime, newJob);
             } catch (error) {
@@ -109,18 +125,15 @@ const updateFixturesInGroup = async (fixtureGroup) => {
     if (match && match[1]) {
         const matchweek = parseInt(match[1], 10);
         console.log(createLogMessage(`Updating fixtures for ${matchweek}`))
-        await updateFixtures(matchweek, fixtureIds)
+        const response = await updateFixtures(matchweek, fixtureIds)
+        return response;
     }
+    return createLogMessage('All fixtures at this time is done. Requesting standings');
 }
 
-const areAllFixturesDone = () => {
-    for (const [startTime, job] of scheduleFixtureJobs) {
-        const fixtureGroup = fixturesByStartTime.get(startTime);
-        if (!fixtureGroup.every((fixture) => fixture.status.long === 'Full Time')) {
-            return false;
-        }
-    }
-    return true;
+const areAllFixturesDone = async () => {
+    const todaysFixtures = await getTodaysFixtures(todaysDate);
+    return todaysFixtures.every((fixture) => fixture.status.long === 'Match Finished')
 }
 
 const getCronTime = (time) => {
@@ -128,8 +141,3 @@ const getCronTime = (time) => {
     const hour = new Date(time).getHours();
     return `${minute} ${hour} * * *`;
 }
-
-// setTimeout(() => {
-//     console.log('Scheduled Fixtures:')
-//     console.log(scheduledFixtureJobs)
-// }, 50000)

@@ -14,6 +14,7 @@ const User = require('./models/user');
 const userRoutes = require('./routes/userRoutes');
 const teamRoutes = require('./routes/teamRoutes');
 const homeRoutes = require('./routes/homeRoutes');
+const fixtureRoutes = require('./routes/fixtureRoutes')
 
 const { setLocalVariables } = require('./utilities/middleware');
 const { setupWebSocketServer } = require('./services/websocket');
@@ -91,6 +92,7 @@ app.use(setLocalVariables);
 app.use('/', userRoutes);
 app.use('/home', homeRoutes)
 app.use('/teams', teamRoutes);
+app.use('/fixtures', fixtureRoutes);
 
 // HEALTH CHECK ENDPOINT
 app.get('/health', (req, res) => {
@@ -98,10 +100,11 @@ app.get('/health', (req, res) => {
 })
 
 // RUN SCHEDULED FUNCTIONS
-app.get('/scheduleTask', (req, res) => {
-    dailyScheduler();
-    res.status(200).send('OK');
-})
+// app.get('/scheduleTask', (req, res) => {
+//     dailyScheduler();
+//     res.status(200).send('OK');
+// })
+dailyScheduler();
 
 
 server.listen(3000, () => {

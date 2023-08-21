@@ -44,10 +44,13 @@ module.exports.requestStandings = async () => {
             }
             await league.save();
         }
+        const responseObj = {
+            message: 'Standings updation successful'
+        }
+        return responseObj
     } catch (error) {
         return error.message;
     }
-    return 'Standings updation successful'
 }
 
 // Destroy and reset everything when the new season is coming

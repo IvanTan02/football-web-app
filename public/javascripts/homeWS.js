@@ -9,7 +9,7 @@ socket.on("message", (message) => {
 });
 
 socket.on("leagueChange", (updatedLeague) => {
-  console.log("Received league change:");
+  console.log("Received league change:", updatedLeague);
   updateLeagueElement(updatedLeague);
 });
 
@@ -32,17 +32,17 @@ const updateLeagueElement = (updatedLeague) => {
     for (let position of updatedLeague.standings) {
       const row = `
         <tr>
-        <th class="text-center" scope="row">${position.rank}</th>
+        <td class="text-center" scope="row">${position.rank}</td>
         <td><img src="${position.team.logo}" alt="" style="height: 25px; width: 25px"
               class="me-1">${position.team.name}</td>
-        <td>${position.all.played}</td>
-        <td>${position.all.win}</td>
-        <td>${position.all.draw}</td>
-        <td>${position.all.lose}</td>
-        <td>${position.all.goals.for}</td>
-        <td>${position.all.goals.against}</td>
-        <td>${position.goalsDiff}</td>
-        <td>${position.points}</td>
+        <td class="text-center">${position.all.played}</td>
+        <td class="text-center">${position.all.win}</td>
+        <td class="text-center">${position.all.draw}</td>
+        <td class="text-center">${position.all.lose}</td>
+        <td class="text-center">${position.all.goals.for}</td>
+        <td class="text-center">${position.all.goals.against}</td>
+        <td class="text-center">${position.goalsDiff}</td>
+        <td class="text-center"><strong>${position.points}</strong></td>
         </tr>
        `;
       leagueTableBody.innerHTML += row;
@@ -65,16 +65,18 @@ const updateFixtureElement = (fixtureId, updatedFields) => {
   if (!fixtureDiv) return;
   if (!updatedFields) return;
 
-  const homeGoals = updatedFields["goals.home"];
-  const awayGoals = updatedFields["goals.away"];
-  const status = updatedFields["status.long"];
+  if (updatedFields && updatedFields.goals) {
+    const goals = updatedFields.goals
+    if (goals) {
+      fixtureDiv.querySelector("#home-goals").textContent = `${goals.home}`;
+      fixtureDiv.querySelector("#away-goals").textContent = `${goals.away}`
+    }
+  };
 
-  if (homeGoals !== undefined && homeGoals !== null && homeGoals !== "")
-    fixtureDiv.querySelector("#home-goals").textContent = `${homeGoals}`;
-
-  if (awayGoals !== undefined && awayGoals !== null && awayGoals !== "")
-    fixtureDiv.querySelector("#away-goals").textContent = `${awayGoals}`;
-
-  if (status)
-    fixtureDiv.querySelector("#match-status").textContent = `${status}`;
+  if (updatedFields && updatedFields.status) {
+    const status = updatedFields.status;
+    if (status) {
+      fixtureDiv.querySelector("#match-status").textContent = `${status.long}`;
+    }
+  }
 };

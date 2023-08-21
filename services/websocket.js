@@ -21,7 +21,7 @@ module.exports.setupWebSocketServer = (server) => {
   const leagueChangeStream = League.watch();
   leagueChangeStream.on("change", async (change) => {
     if (change.operationType === "update") {
-      console.log("League change detected", change);
+      console.log("League change detected", change.updateDescription.updatedFields);
       const updatedLeague = await getUpdatedLeagueTable();
       io.emit("leagueChange", updatedLeague);
     }
@@ -48,8 +48,6 @@ module.exports.setupWebSocketServer = (server) => {
     // Socket.IO message event handler
     socket.on("message", (message) => {
       console.log("Received message:", message);
-      // You can also broadcast the message to other connected clients if needed:
-      // socket.broadcast.emit('message', message);
     });
 
     // Socket.IO disconnection event handler

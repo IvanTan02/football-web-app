@@ -13,41 +13,52 @@ const Rounds = {
   UPCOMING: 'Upcoming'
 }
 
-const reqFixtures = async (matchweek, fixtureIds = null) => {
+const reqFixtures = async (matchweek = null, fixtureIds = null) => {
+  console.log('Requesting fixtures....')
   const params = {
     league: "39",
     season: "2023",
-    round: `Regular Season - ${matchweek}`,
     timezone: "Asia/Kuala_Lumpur",
   };
+  if (matchweek) params.round = `Regular Season - ${matchweek}`;
   if (fixtureIds) params.ids = fixtureIds.join('-');
   const options = makeReqObject("/fixtures", params);
   const result = await axios(options);
   return result;
 };
 
-module.exports.updateFixtures = async (matchweek, fixtureIds = null) => {
+module.exports.updateFixtures = async (matchweek = null, fixtureIds = null) => {
   try {
+    const updatedFixtures = [];
     const result = await reqFixtures(matchweek, fixtureIds);
+    console.log('Got the fixtures... updating them in db')
     for (let f of result.data.response) {
       const { id } = f.fixture;
       const existingFixture = await Fixture.findOne({ id });
 
       if (existingFixture) {
+        console.log('Found the existing fixture...')
+        // console.log(f.fixture.status)
+        // console.log(f.goals)
         existingFixture.status = f.fixture.status;
-        if (!f.goals.home || !f.goals.away) {
-          existingFixture.goals.home = 0;
-          existingFixture.goals.away = 0;
-        } else {
+        if (f.goals.home || f.goals.away) {
           existingFixture.goals = f.goals;
         }
         await existingFixture.save();
+        console.log('Updating fixture id: ', existingFixture.id)
+        console.log(existingFixture.status.long);
+        updatedFixtures.push(existingFixture);
       }
     }
+    console.log('Fixtures updated in db.... should be fine')
+    const responseObj = {
+      updatedFixtures,
+      message: 'Fixture updation successful'
+    }
+    return responseObj;
   } catch (error) {
-    return error.message;
+    return 'Im sad';
   }
-  return 'Fixture updation successful'
 };
 
 module.exports.getTodaysFixtures = async (todaysDate) => {

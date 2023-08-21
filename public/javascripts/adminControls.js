@@ -28,7 +28,10 @@ updateFixturesBtn.addEventListener('click', () => {
     const data = {
         matchweek: matchweek.value
     }
-    makeAPIRequest('/fixtures', data);
+    setTimeout(() => {
+        makeAPIRequest('/fixtures', data);
+    }, 10000)
+
 })
 
 const updateTeam = (updateOption) => {
@@ -50,7 +53,7 @@ const updateTeam = (updateOption) => {
 const makeAPIRequest = (route, data = null) => {
     axios.put(route, data)
         .then((response) => {
-            updateStatus.innerText = response.data;
+            updateStatus.innerText = response.data.message;
         })
         .catch((error) => {
             updateStatus.innerText = error;
