@@ -100,13 +100,11 @@ app.get('/health', (req, res) => {
 })
 
 // RUN SCHEDULED FUNCTIONS
-// app.get('/scheduleTask', (req, res) => {
-//     dailyScheduler();
-//     res.status(200).send('OK');
-// })
-dailyScheduler();
+app.get('/runScheduledTask', (req, res) => {
+    dailyScheduler();
+    res.status(200).send('OK');
+})
 
-
-server.listen(3000, () => {
-    console.log('Server listening on port 3000');
+server.listen(process.env.PORT, () => {
+    console.log('Server listening on port', process.env.PORT);
 });
