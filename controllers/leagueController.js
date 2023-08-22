@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 const League = require("../models/league");
 const Fixture = require("../models/fixture");
@@ -17,25 +17,31 @@ module.exports.renderHomePage = async (req, res) => {
     .populate("teams.away")
     .populate("goals");
 
-  const pastFixtures = getRoundFixtures(fixtures, 'Past');
-  const currentFixtures = getRoundFixtures(fixtures, 'Current');
-  const upcomingFixtures = getRoundFixtures(fixtures, 'Upcoming');
+  const { roundFixtures, currentRound } = getRoundFixtures(fixtures, 'Current');
+  roundFixtures.sort(compareStartTimes);
+  assignDateTime(roundFixtures);
 
-  assignDateTime(pastFixtures);
-  assignDateTime(currentFixtures);
-  assignDateTime(upcomingFixtures);
-
-  res.render("home", { league, pastFixtures, currentFixtures, upcomingFixtures });
+  res.render("home", { league, roundFixtures, currentRound });
 };
+
+module.exports.updateStandings = async (req, res) => {
+  const response = await requestStandings();
+  res.send(response)
+}
 
 const assignDateTime = (fixtures) => {
   for (let f of fixtures) {
-    f.matchDate = moment(f.date).format("D MMM YYYY");
-    f.matchTime = moment(f.date).format("hh:mm A");
+    const localMomentTime = moment.tz(f.date, 'Asia/Kuala_Lumpur');
+    f.matchDate = localMomentTime.format("D MMM YYYY");
+    f.matchTime = localMomentTime.format("hh:mm A");
+    console.log(f.id)
   }
 }
 
-module.exports.updateStandings = async (req, res) => {
-  const message = await requestStandings();
-  res.send(message)
+const compareStartTimes = (fixtureA, fixtureB) => {
+  const startTimeA = moment.tz(fixtureA.date, 'YYYY-MM-DDTHH:mm:ssZ', 'Asia/Kuala_Lumpur');
+  const startTimeB = moment.tz(fixtureB.date, 'YYYY-MM-DDTHH:mm:ssZ', 'Asia/Kuala_Lumpur');
+  return startTimeA - startTimeB;
 }
+
+

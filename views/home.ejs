@@ -3,8 +3,8 @@
 <div class="row">
   <div class="col-md-6">
     <div class="container" id="fixture-container">
-    <h4>Current Fixtures</h4>
-    <% for (let fixture of currentFixtures) { %>
+    <h4>Matchweek <%= currentRound %> Fixtures</h4>
+    <% for (let fixture of roundFixtures) { %>
     <div class="row mb-2 fixture-box box-shadow-rounded" id="fixture-<%= fixture._id %>">
       <div class="col-4 text-center d-flex flex-column align-items-center justify-content-center home-team">
         <img src="<%= fixture.teams.home.logo %>" alt="" class="team-logo mb-1" />
@@ -83,7 +83,7 @@
 </div>
 
 <script>
-  const fixtures = <%- JSON.stringify(currentFixtures) %>
+  const fixtures = <%- JSON.stringify(roundFixtures) %>
 </script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/homeWS.js"></script>

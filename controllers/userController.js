@@ -17,7 +17,7 @@ module.exports.registerUser = async (req, res) => {
         req.login(newUser, (error) => {
             if (error) return next(error);
             req.flash('success', `Registration successful. Welcome, ${username}!`);
-            res.redirect('/home');
+            res.redirect('/');
         })
     } catch (error) {
         req.flash('error', error.message);
@@ -27,16 +27,16 @@ module.exports.registerUser = async (req, res) => {
 
 module.exports.loginUser = (req, res) => {
     const { username } = req.user;
-    req.flash('success', `Welcome back, ${username}`)
-    const redirectUrl = res.locals.returnTo || '/home';
+    req.flash('success', `Welcome back, ${username}.`)
+    const redirectUrl = res.locals.returnTo || '/';
     res.redirect(redirectUrl);
 }
 
 module.exports.logoutUser = (req, res) => {
     req.logout(function (error) {
         if (error) return next(error)
-        req.flash('success', 'Fuck off mate')
-        res.redirect('/home')
+        req.flash('success', 'Successfully logged you out.')
+        res.redirect('/')
     })
 }
 
