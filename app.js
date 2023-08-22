@@ -90,7 +90,7 @@ app.use(setLocalVariables);
 
 // ROUTERS
 app.use('/', userRoutes);
-app.use('/home', homeRoutes)
+app.use('/', homeRoutes)
 app.use('/teams', teamRoutes);
 app.use('/fixtures', fixtureRoutes);
 

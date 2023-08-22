@@ -103,7 +103,7 @@ module.exports.getRoundFixtures = (fixtures, round) => {
       );
       break;
   }
-  return roundFixtures;
+  return { roundFixtures, currentRound };
 
 };
 
@@ -140,10 +140,11 @@ const getRoundsDates = (fixtures) => {
 
 const getCurrentRound = (rounds) => {
   const currentDate = new Date();
+  let currentRound = 1;
 
   for (let i = 0; i < rounds.length; i++) {
-    const { startDate, endDate } = rounds[i];
-    if (currentDate >= startDate && currentDate <= endDate) return i + 1;
+    const { endDate } = rounds[i];
+    if (currentDate >= endDate) currentRound++;
   }
-  return 1;
+  return currentRound;
 };

@@ -20,7 +20,7 @@ updateCoachesBtn.addEventListener('click', () => { updateTeam('Coaches') });
 updateSquadsBtn.addEventListener('click', () => { updateTeam('Squad') })
 
 updateStandingsBtn.addEventListener('click', () => {
-    makeAPIRequest('/home/standings');
+    makeAPIRequest('/standings');
 });
 
 updateFixturesBtn.addEventListener('click', () => {

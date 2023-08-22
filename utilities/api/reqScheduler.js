@@ -15,7 +15,7 @@ module.exports.dailyScheduler = async () => {
     // Run everyday at 12am
     console.log(createLogMessage('Running daily scheduler'));
     // Check if there is any fixtures today
-    const todaysFixtures = await getTodaysFixtures(todaysDate);
+    const todaysFixtures = await getTodaysFixtures('2023-08-26');
     if (todaysFixtures.length !== 0) {
         await processTodaysFixtures(todaysFixtures);
     }
