@@ -4,7 +4,7 @@ const League = require("../../models/league");
 const Team = require("../../models/team");
 const Fixture = require("../../models/fixture");
 
-const { makeReqObject } = require("./apiHelpers");
+const { makeReqObject, createLogMessage } = require("./apiHelpers");
 
 // ENUM VALUES FOR ROUNDS
 const Rounds = {
@@ -81,6 +81,8 @@ module.exports.getRoundFixtures = (fixtures, round) => {
 
   if (!Object.values(Rounds).includes(round)) return;
   let roundFixtures;
+
+  console.log(createLogMessage(`Current Round is ${currentRound}`));
 
   switch (round) {
     case Rounds.PAST:

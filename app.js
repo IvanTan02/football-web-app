@@ -100,8 +100,8 @@ app.get('/health', (req, res) => {
 })
 
 // RUN SCHEDULED FUNCTIONS
-app.get('/runScheduledTask', (req, res) => {
-    dailyScheduler();
+app.get('/runScheduledTask', async (req, res) => {
+    await dailyScheduler();
     res.status(200).send('OK');
 })
 

@@ -11,20 +11,14 @@ let recurringFixtureJobs = new Map();
 const fixturesByStartTime = new Map();
 const todaysDate = getTodaysDate();
 
-module.exports.dailyScheduler = () => {
-    cron.schedule('0 0 * * *', async () => {
-        // Run everyday at 12am
-        console.log(createLogMessage('Running daily scheduler'))
-        // Check if there is any fixtures today
-        const todaysFixtures = await getTodaysFixtures(todaysDate);
-        if (todaysFixtures.length !== 0) {
-            await processTodaysFixtures(todaysFixtures);
-        }
-    }, {
-        scheduled: true,
-        timezone: 'Asia/Kuala_Lumpur'
-    })
-
+module.exports.dailyScheduler = async () => {
+    // Run everyday at 12am
+    console.log(createLogMessage('Running daily scheduler'));
+    // Check if there is any fixtures today
+    const todaysFixtures = await getTodaysFixtures(todaysDate);
+    if (todaysFixtures.length !== 0) {
+        await processTodaysFixtures(todaysFixtures);
+    }
 };
 
 const processTodaysFixtures = async (todaysFixtures) => {
@@ -71,12 +65,6 @@ const processFixturesForStartTime = async (startTime, fixtureGroup) => {
 
         const response = await updateFixturesInGroup(fixtureGroup);
         const { updatedFixtures } = response;
-
-        // const updatedFixtures = [];
-        // for (let fixture of fixtureGroup) {
-        //     const foundFixture = await Fixture.findOne({ 'id': fixture.id });
-        //     if (foundFixture) updatedFixtures.push(foundFixture);
-        // }
 
         const allFixturesFullTime = updatedFixtures.every((fixture) => fixture.status.long === 'Match Finished');
         if (allFixturesFullTime) {
