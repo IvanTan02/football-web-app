@@ -34,7 +34,6 @@ const assignDateTime = (fixtures) => {
     const localMomentTime = moment.tz(f.date, 'Asia/Kuala_Lumpur');
     f.matchDate = localMomentTime.format("D MMM YYYY");
     f.matchTime = localMomentTime.format("hh:mm A");
-    console.log(f.id)
   }
 }
 
