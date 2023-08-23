@@ -64,28 +64,29 @@ const processFixturesForStartTime = async (startTime, fixtureGroup) => {
         console.log(createLogMessage('Processing current start time fixtures'))
 
         const response = await updateFixturesInGroup(fixtureGroup);
-        const { updatedFixtures } = response;
+        console.log(createLogMessage(response))
+        // const { updatedFixtures } = response;
 
-        const allFixturesFullTime = updatedFixtures.every((fixture) => fixture.status.long === 'Match Finished');
-        if (allFixturesFullTime) {
-            console.log(createLogMessage('Fixtures in current batch FT. Stopping jobs.'))
-            if (recurringFixtureJobs.has(startTime)) {
-                recurringFixtureJobs.get(startTime).stop();
-                recurringFixtureJobs.delete(startTime);
-            }
+        // const allFixturesFullTime = updatedFixtures.every((fixture) => fixture.status.long === 'Match Finished');
+        // if (allFixturesFullTime) {
+        //     console.log(createLogMessage('Fixtures in current batch FT. Stopping jobs.'))
+        //     if (recurringFixtureJobs.has(startTime)) {
+        //         recurringFixtureJobs.get(startTime).stop();
+        //         recurringFixtureJobs.delete(startTime);
+        //     }
 
-            if (scheduledFixtureJobs.has(startTime)) {
-                scheduledFixtureJobs.get(startTime).stop();
-                scheduledFixtureJobs.delete(startTime);
-            }
+        //     if (scheduledFixtureJobs.has(startTime)) {
+        //         scheduledFixtureJobs.get(startTime).stop();
+        //         scheduledFixtureJobs.delete(startTime);
+        //     }
 
-            const allFixturesDone = await areAllFixturesDone();
-            if (allFixturesDone) {
-                console.log(createLogMessage('All fixtures at this time is done. Requesting standings'))
-                await requestStandings();
-            }
-            return;
-        }
+        //     const allFixturesDone = await areAllFixturesDone();
+        //     if (allFixturesDone) {
+        //         console.log(createLogMessage('All fixtures at this time is done. Requesting standings'))
+        //         await requestStandings();
+        //     }
+        //     return;
+        // }
 
         if (!recurringFixtureJobs.has(startTime)) {
             try {
@@ -113,8 +114,8 @@ const updateFixturesInGroup = async (fixtureGroup) => {
     if (match && match[1]) {
         const matchweek = parseInt(match[1], 10);
         console.log(createLogMessage(`Updating fixtures for ${matchweek}`))
-        const response = await updateFixtures(matchweek, fixtureIds)
-        return response;
+        // const response = await updateFixtures(matchweek, fixtureIds)
+        return 'Updated fixtures (fakesies) SUCCESS';
     }
     return createLogMessage('All fixtures at this time is done. Requesting standings');
 }
