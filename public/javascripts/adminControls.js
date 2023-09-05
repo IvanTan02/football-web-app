@@ -28,9 +28,7 @@ updateFixturesBtn.addEventListener('click', () => {
     const data = {
         matchweek: matchweek.value
     }
-    setTimeout(() => {
-        makeAPIRequest('/fixtures', data);
-    }, 10000)
+    makeAPIRequest('/fixtures', data);
 
 })
 
