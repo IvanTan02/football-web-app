@@ -1,3 +1,6 @@
+
+const axios = require('axios');
+
 const { updateFixtures, getTodaysFixtures } = require('./fixtureHelper');
 const { requestStandings } = require('./leagueHelpers');
 const { getTodaysDate, createLogMessage } = require('./apiHelpers');
@@ -8,6 +11,8 @@ const todaysDate = getTodaysDate();
 
 module.exports.dailyScheduler = async () => {
     console.log(createLogMessage('Running daily scheduler'));
+    await updateFixtures();
+    await requestStandings();
     // Check if there is any fixtures today
     // const todaysFixtures = await getTodaysFixtures(todaysDate);
     const todaysFixtures = await getTodaysFixtures('2023-10-21');

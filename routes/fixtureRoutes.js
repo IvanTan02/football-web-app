@@ -10,4 +10,7 @@ router.route('/')
 router.route('/scheduled')
     .put(fixtureController.makeScheduledAPICall)
 
+router.route('/:matchweek')
+    .get(fixtureController.getFixtureByMatchweek)
+
 module.exports = router;

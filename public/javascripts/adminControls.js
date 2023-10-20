@@ -4,6 +4,7 @@ const updateSquadsBtn = document.querySelector('#update-squads-btn');
 
 const updateStandingsBtn = document.querySelector('#update-standings-btn');
 const updateFixturesBtn = document.querySelector('#update-fixtures-btn');
+const updateAllFixturesBtn = document.querySelector('#update-all-fixtures-btn');
 
 const updateStatus = document.querySelector('#update-status')
 
@@ -22,6 +23,10 @@ updateSquadsBtn.addEventListener('click', () => { updateTeam('Squad') })
 updateStandingsBtn.addEventListener('click', () => {
     makeAPIRequest('/standings');
 });
+
+updateAllFixturesBtn.addEventListener('click', () => {
+    makeAPIRequest('/fixtures');
+})
 
 updateFixturesBtn.addEventListener('click', () => {
     if (isNaN(matchweek.value)) return updateStatus.innerText = 'Matchweek must be a number!';

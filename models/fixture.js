@@ -1,3 +1,6 @@
+
+const moment = require("moment-timezone");
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -34,6 +37,15 @@ const fixtureSchema = new Schema({
         away: Number
     }
 });
+
+fixtureSchema.virtual('formattedDate').get(function () {
+    if (!this.date) return null;
+    const localMomentTime = moment.tz(this.date, 'Asia/Kuala_Lumpur');
+    return {
+        matchDate: localMomentTime.format("D MMM YYYY"),
+        matchTime: localMomentTime.format("hh:mm A")
+    };
+})
 
 const Fixture = mongoose.model('Fixture', fixtureSchema);
 
