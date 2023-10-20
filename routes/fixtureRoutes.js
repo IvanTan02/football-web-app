@@ -5,6 +5,9 @@ const fixtureController = require('../controllers/fixtureController');
 
 router.route('/')
     .get(fixtureController.renderFixturesPage)
-    .put(fixtureController.updateFixtures);
+    .put(fixtureController.updateFixtures)
+
+router.route('/scheduled')
+    .put(fixtureController.makeScheduledAPICall)
 
 module.exports = router;
