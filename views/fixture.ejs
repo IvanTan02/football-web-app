@@ -1,2 +1,18 @@
 <% layout('layouts/boilerplate') %>
 <h3 class="mb-4 title">Fixtures</h3>
+<select id="matchweek-selector" class="form-select mb-3" aria-label="Matchweek Select Menu">
+  <option selected>Select Matchweek</option>
+  <% for (let i = 0; i < 38; i++) { %>
+  <option value="<%= i+1 %>">Matchweek <%= i+1 %></option>
+  <% } %>
+</select>
+<div class="row">
+  <div class="col-md-8 offset-2">
+    <div id="fixture-container">
+      <p class="indicator-text text-muted mt-5">No Matchweek Selected.</p>
+    </div>
+  </div>
+</div>
+
+<script src="javascripts/loadMatchweekFixtures.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

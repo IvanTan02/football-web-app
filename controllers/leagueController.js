@@ -18,7 +18,7 @@ module.exports.renderHomePage = async (req, res) => {
     .populate("goals");
 
   const { roundFixtures, currentRound } = getRoundFixtures(fixtures, 'Current');
-  roundFixtures.sort(compareStartTimes);
+  roundFixtures.sort(this.compareStartTimes);
   assignDateTime(roundFixtures);
 
   res.render("home", { league, roundFixtures, currentRound });
@@ -37,7 +37,7 @@ const assignDateTime = (fixtures) => {
   }
 }
 
-const compareStartTimes = (fixtureA, fixtureB) => {
+module.exports.compareStartTimes = (fixtureA, fixtureB) => {
   const startTimeA = moment.tz(fixtureA.date, 'YYYY-MM-DDTHH:mm:ssZ', 'Asia/Kuala_Lumpur');
   const startTimeB = moment.tz(fixtureB.date, 'YYYY-MM-DDTHH:mm:ssZ', 'Asia/Kuala_Lumpur');
   return startTimeA - startTimeB;
