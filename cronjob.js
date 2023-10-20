@@ -1,6 +1,8 @@
 
 const axios = require('axios')
 
+const { getFootballAPIHeaders } = require('./utilities/api/apiHelpers')
+
 const ping = 'https://eplcentral-football-app.onrender.com/health'
 
 const reqObject = {
@@ -17,11 +19,11 @@ const reqObject = {
             saveResponses: true,
             schedule: {
                 timezone: 'Asia/Kuala_Lumpur',
-                expiresAt: '20230905093900',
-                hours: [-1],
-                mdays: [-1],
-                minutes: [-1],
-                months: [-1],
+                expiresAt: '20230907093900',
+                hours: [9],
+                mdays: [7],
+                minutes: [-1, 5],
+                months: [9],
                 wdays: [-1]
             }
         }
@@ -29,7 +31,9 @@ const reqObject = {
 
 }
 
-async function createCronJob() {
+
+
+async function createCronJobTest() {
     try {
         const res = await axios(reqObject)
         console.log(res.data);
@@ -38,5 +42,5 @@ async function createCronJob() {
     }
 }
 
-createCronJob();
+createCronJobTest();
 

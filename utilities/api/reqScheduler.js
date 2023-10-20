@@ -1,21 +1,16 @@
-const cron = require('node-cron');
-
 const { updateFixtures, getTodaysFixtures } = require('./fixtureHelper');
 const { requestStandings } = require('./leagueHelpers');
 const { getTodaysDate, createLogMessage } = require('./apiHelpers');
 
-const Fixture = require('../../models/fixture');
-
 let scheduledFixtureJobs = new Map();
-let recurringFixtureJobs = new Map();
 const fixturesByStartTime = new Map();
 const todaysDate = getTodaysDate();
 
 module.exports.dailyScheduler = async () => {
-    // Run everyday at 12am
     console.log(createLogMessage('Running daily scheduler'));
     // Check if there is any fixtures today
-    const todaysFixtures = await getTodaysFixtures();
+    // const todaysFixtures = await getTodaysFixtures(todaysDate);
+    const todaysFixtures = await getTodaysFixtures('2023-10-21');
     if (todaysFixtures.length !== 0) {
         await processTodaysFixtures(todaysFixtures);
     }
@@ -23,7 +18,7 @@ module.exports.dailyScheduler = async () => {
 
 const processTodaysFixtures = async (todaysFixtures) => {
 
-    console.log(createLogMessage('Grouping todays fixtures start times'))
+    console.log(createLogMessage('Grouping todays fixtures based on start time'))
     console.log(todaysFixtures)
 
     // Group fixtures by start times 
@@ -32,101 +27,119 @@ const processTodaysFixtures = async (todaysFixtures) => {
         if (!fixturesByStartTime.has(startTime)) {
             fixturesByStartTime.set(startTime, []);
         }
-        fixturesByStartTime.get(startTime).push(fixture);
+        fixturesByStartTime.get(startTime).push(fixture.id);
     }
     console.log(fixturesByStartTime)
-    await scheduleFixtureJobs(fixturesByStartTime);
+    await scheduleJobsForStartTimes();
 }
 
-const scheduleFixtureJobs = async (fixturesByStartTime) => {
+const scheduleJobsForStartTimes = async () => {
 
     console.log(createLogMessage('Scheduling jobs for each start time'))
 
     for (const [startTime, fixtureGroup] of fixturesByStartTime) {
-        try {
-            const newJob = cron.schedule(getCronTime(startTime), async () => {
-                console.log(createLogMessage(`Scheduling jobs for ${startTime} `))
-                await processFixturesForStartTime(startTime, fixtureGroup);
-            },
-                {
-                    scheduled: true,
-                    timezone: "Asia/Kuala_Lumpur",
-                })
-            scheduledFixtureJobs.set(startTime, newJob)
-        } catch (error) {
-            console.log(error)
+        // Create a cron job for each start time group
+        const jobObj = createJobObject(startTime)
+        const job = await createCronJob(jobObj);
+        if (!scheduledFixtureJobs.has(startTime)) {
+            scheduledFixtureJobs.set(startTime, job)
         }
     }
 }
 
-const processFixturesForStartTime = async (startTime, fixtureGroup) => {
-    try {
-        console.log(createLogMessage('Processing current start time fixtures'))
-
-        const response = await updateFixturesInGroup(fixtureGroup);
-        console.log(createLogMessage(response))
-        // const { updatedFixtures } = response;
-
-        // const allFixturesFullTime = updatedFixtures.every((fixture) => fixture.status.long === 'Match Finished');
-        // if (allFixturesFullTime) {
-        //     console.log(createLogMessage('Fixtures in current batch FT. Stopping jobs.'))
-        //     if (recurringFixtureJobs.has(startTime)) {
-        //         recurringFixtureJobs.get(startTime).stop();
-        //         recurringFixtureJobs.delete(startTime);
-        //     }
-
-        //     if (scheduledFixtureJobs.has(startTime)) {
-        //         scheduledFixtureJobs.get(startTime).stop();
-        //         scheduledFixtureJobs.delete(startTime);
-        //     }
-
-        //     const allFixturesDone = await areAllFixturesDone();
-        //     if (allFixturesDone) {
-        //         console.log(createLogMessage('All fixtures at this time is done. Requesting standings'))
-        //         await requestStandings();
-        //     }
-        //     return;
-        // }
-
-        if (!recurringFixtureJobs.has(startTime)) {
-            try {
-                const newJob = cron.schedule('*/5 * * * *', () => {
-                    console.log(createLogMessage(`Calling fixtures at ${startTime} every 5 minutes`))
-                    processFixturesForStartTime(startTime, fixtureGroup);
-                });
-                recurringFixtureJobs.set(startTime, newJob);
-            } catch (error) {
-                console.log(error)
+const createCronJob = async (job) => {
+    const { url, schedule, params } = job;
+    const cronJob = {
+        method: 'PUT',
+        url: `https://api.cron-job.org/jobs`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer W0u0c9HmhKMCzmulsHAYEV7Si2SIoTaxTSXpdLN34ps=',
+        },
+        data: {
+            job: {
+                url: url,
+                enabled: true,
+                saveResponses: true,
+                schedule: schedule,
+                params: params
             }
         }
+    }
+    const response = await axios(cronJob);
+    return response.data.jobId;
+}
 
-    } catch (error) {
-        console.log(error)
+const deleteCronJob = async (jobId) => {
+    const jobToDelete = {
+        method: 'DELETE',
+        url: `https://api.cron-job.org/jobs/${jobId}`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer W0u0c9HmhKMCzmulsHAYEV7Si2SIoTaxTSXpdLN34ps=',
+        },
+    }
+    const res = await axios(jobToDelete);
+    if (JSON.stringify(res.data) === '{}') return `Job (${jobId}) has been deleted`;
+}
+
+module.exports.makeScheduledFixtureCall = async (startTime) => {
+    const currentTime = new Date();
+    if (currentTime.getMinutes() % 5 !== 0) return;
+
+    // Make API update call
+    const fixtures = fixturesByStartTime.get(startTime);
+    const fixtureIds = fixtures.filter(f => f.id)
+
+    // Dummy Test
+    createLogMessage(`Updating fixture with these ids:`)
+    console.log(fixtureIds)
+
+    // Check if all fixtures for this batch has finished
+    // const { updatedFixtures } = await updateFixtures(fixtureIds)
+    // const allFixturesFullTime = updatedFixtures.every((fixture) => fixture.status.long === 'Match Finished');
+    // if (allFixturesFullTime) {
+    //     // Delete the job
+    //     const jobId = scheduledFixtureJobs.get(startTime);
+    //     const deleteResult = await deleteCronJob(jobId)
+    //     createLogMessage(deleteResult)
+
+    //     // Make a standings call
+    //     await requestStandings();
+    //     return;
+    // }
+
+    // Response
+    return {
+        statusCode: 200,
+        message: 'Fixture Call OK'
     }
 }
 
-const updateFixturesInGroup = async (fixtureGroup) => {
-    const fixtureIds = fixtureGroup.map(fixture => fixture.id);
-
-    // Extracting the current matchweek
-    const regex = /(\d+)/;
-    const match = fixtureGroup[0].round.match(regex);
-    if (match && match[1]) {
-        const matchweek = parseInt(match[1], 10);
-        console.log(createLogMessage(`Updating fixtures for ${matchweek}`))
-        // const response = await updateFixtures(matchweek, fixtureIds)
-        return 'Updated fixtures (fakesies) SUCCESS';
+const createJobObject = (startTime) => {
+    const url = 'https://eplcentral-football-app.onrender.com/fixtures/scheduled';
+    const schedule = createJobSchedule(startTime);
+    console.log(schedule)
+    const params = {
+        startTime: startTime
     }
-    return createLogMessage('All fixtures at this time is done. Requesting standings');
+    return {
+        url: url,
+        schedule: schedule,
+        params: params
+    }
 }
 
-const areAllFixturesDone = async () => {
-    const todaysFixtures = await getTodaysFixtures(todaysDate);
-    return todaysFixtures.every((fixture) => fixture.status.long === 'Match Finished')
-}
-
-const getCronTime = (time) => {
-    const minute = new Date(time).getMinutes();
-    const hour = new Date(time).getHours();
-    return `${minute} ${hour} * * *`;
+const createJobSchedule = (startTime) => {
+    const dateObj = new Date(startTime);
+    const schedule = {
+        timezone: 'Asia/Kuala_Lumpur',
+        expiresAt: 0,
+        months: [dateObj.getMonth() + 1],
+        mdays: [dateObj.getDate()],
+        hours: [dateObj.getHours()],
+        minutes: [-1, dateObj.getMinutes()],
+        wdays: [-1]
+    }
+    return schedule;
 }

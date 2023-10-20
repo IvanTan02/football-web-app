@@ -15,6 +15,14 @@ module.exports.makeReqObject = (endpoint, params) => {
     return reqObject;
 }
 
+module.exports.getFootballAPIHeaders = () => {
+    const headers = {
+        'x-rapidapi-host': 'v3.football.api-sports.io',
+        'x-rapidapi-key': process.env.API_FOOTBALL_KEY,
+    }
+    return headers;
+}
+
 module.exports.createLogMessage = (message) => {
     return `${getCurrentTimestamp()}: ${message}....`;
 }
