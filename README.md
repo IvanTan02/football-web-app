@@ -4,7 +4,7 @@ EPLCentral is a football web app centered around the English Premier League (EPL
 ## Table of Contents
 - [Features](#features)
 - [Demo](#demo)
-- [Contributions](#contributing)
+- [Contributions](#contributions)
 
 ## Features
 1. View Current Fixtures and League Table
