@@ -1,5 +1,8 @@
 
 const axios = require('axios')
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 const { getFootballAPIHeaders } = require('./utilities/api/apiHelpers')
 
@@ -10,7 +13,7 @@ const reqObject = {
     url: `https://api.cron-job.org/jobs`,
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer W0u0c9HmhKMCzmulsHAYEV7Si2SIoTaxTSXpdLN34ps=',
+        'Authorization': process.env.CRON_API_KEY,
     },
     data: {
         job: {
@@ -30,8 +33,6 @@ const reqObject = {
     }
 
 }
-
-
 
 async function createCronJobTest() {
     try {

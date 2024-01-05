@@ -1,5 +1,8 @@
 
 const axios = require('axios');
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 const { updateFixtures, getTodaysFixtures } = require('./fixtureHelper');
 const { requestStandings } = require('./leagueHelpers');
@@ -52,18 +55,19 @@ const scheduleJobsForStartTimes = async () => {
     }
 }
 
+// CREATE A CRON JOB FOR EACH FIXTURE GROUP
 const createCronJob = async (job) => {
-    const { url, schedule, params } = job;
+    const { fixtureUrl, schedule, params } = job;
     const cronJob = {
         method: 'PUT',
         url: `https://api.cron-job.org/jobs`,
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer W0u0c9HmhKMCzmulsHAYEV7Si2SIoTaxTSXpdLN34ps=',
+            'Authorization': process.env.CRON_API_KEY,
         },
         data: {
             job: {
-                url: url,
+                url: fixtureUrl,
                 enabled: true,
                 saveResponses: true,
                 schedule: schedule,
@@ -75,13 +79,40 @@ const createCronJob = async (job) => {
     return response.data.jobId;
 }
 
+const createJobObject = (startTime) => {
+    const url = 'https://eplcentral-football-app.onrender.com/fixtures/scheduled';
+    const schedule = createJobSchedule(startTime);
+    const params = {
+        startTime: startTime
+    }
+    return {
+        fixtureUrl: url,
+        schedule: schedule,
+        params: params
+    }
+}
+
+const createJobSchedule = (startTime) => {
+    const dateObj = new Date(startTime);
+    const schedule = {
+        timezone: 'Asia/Kuala_Lumpur',
+        expiresAt: 0,
+        months: [dateObj.getMonth() + 1],
+        mdays: [dateObj.getDate()],
+        hours: [dateObj.getHours()],
+        minutes: [-1, dateObj.getMinutes()],
+        wdays: [-1]
+    }
+    return schedule;
+}
+
 const deleteCronJob = async (jobId) => {
     const jobToDelete = {
         method: 'DELETE',
         url: `https://api.cron-job.org/jobs/${jobId}`,
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer W0u0c9HmhKMCzmulsHAYEV7Si2SIoTaxTSXpdLN34ps=',
+            'Authorization': process.env.CRON_API_KEY,
         },
     }
     const res = await axios(jobToDelete);
@@ -90,6 +121,7 @@ const deleteCronJob = async (jobId) => {
 
 module.exports.makeScheduledFixtureCall = async (startTime) => {
     const currentTime = new Date();
+    createLogMessage(`The cron job actually called me LESGOOOO`)
     if (currentTime.getMinutes() % 5 !== 0) return;
 
     // Make API update call
@@ -121,30 +153,4 @@ module.exports.makeScheduledFixtureCall = async (startTime) => {
     }
 }
 
-const createJobObject = (startTime) => {
-    const url = 'https://eplcentral-football-app.onrender.com/fixtures/scheduled';
-    const schedule = createJobSchedule(startTime);
-    console.log(schedule)
-    const params = {
-        startTime: startTime
-    }
-    return {
-        url: url,
-        schedule: schedule,
-        params: params
-    }
-}
 
-const createJobSchedule = (startTime) => {
-    const dateObj = new Date(startTime);
-    const schedule = {
-        timezone: 'Asia/Kuala_Lumpur',
-        expiresAt: 0,
-        months: [dateObj.getMonth() + 1],
-        mdays: [dateObj.getDate()],
-        hours: [dateObj.getHours()],
-        minutes: [-1, dateObj.getMinutes()],
-        wdays: [-1]
-    }
-    return schedule;
-}
