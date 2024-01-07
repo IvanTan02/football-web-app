@@ -38,8 +38,6 @@ module.exports.updateFixtures = async (matchweek = null, fixtureIds = null) => {
 
       if (existingFixture) {
         console.log('Found the existing fixture...')
-        // console.log(f.fixture.status)
-        // console.log(f.goals)
         existingFixture.status = f.fixture.status;
         if (f.goals.home || f.goals.away) {
           existingFixture.goals = f.goals;
@@ -57,7 +55,7 @@ module.exports.updateFixtures = async (matchweek = null, fixtureIds = null) => {
     }
     return responseObj;
   } catch (error) {
-    return 'Im sad';
+    console.error(error);
   }
 };
 

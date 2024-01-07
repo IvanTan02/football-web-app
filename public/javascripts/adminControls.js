@@ -1,4 +1,7 @@
 
+const updateAllCoachesBtn = document.querySelector('#update-all-coach-btn');
+const updateAllSquadsBtn = document.querySelector('#update-all-squads-btn');
+
 const updateCoachesBtn = document.querySelector('#update-coaches-btn');
 const updateSquadsBtn = document.querySelector('#update-squads-btn');
 
@@ -16,9 +19,13 @@ const TeamUpdateOptions = {
     SQUAD: 'Squad',
 }
 
-updateCoachesBtn.addEventListener('click', () => { updateTeam('Coaches') });
+updateAllCoachesBtn.addEventListener('click', () => { updateAllTeams('Coaches') });
 
-updateSquadsBtn.addEventListener('click', () => { updateTeam('Squad') })
+updateAllSquadsBtn.addEventListener('click', () => { updateAllTeams('Squad') });
+
+updateCoachesBtn.addEventListener('click', () => { updateSpecificTeam('Coaches') });
+
+updateSquadsBtn.addEventListener('click', () => { updateSpecificTeam('Squad') })
 
 updateStandingsBtn.addEventListener('click', () => {
     makeAPIRequest('/standings');
@@ -37,7 +44,21 @@ updateFixturesBtn.addEventListener('click', () => {
 
 })
 
-const updateTeam = (updateOption) => {
+const updateAllTeams = (updateOption) => {
+    const data = {
+        updateOption: updateOption
+    }
+    switch (updateOption) {
+        case TeamUpdateOptions.COACHES:
+            makeAPIRequest(`/teams`, data);
+            break;
+        case TeamUpdateOptions.SQUAD:
+            makeAPIRequest(`/teams`, data);
+            break;
+    }
+}
+
+const updateSpecificTeam = (updateOption) => {
     if (teamSelect.value === 'null') return;
     const data = {
         teamId: teamSelect.value,
@@ -45,10 +66,10 @@ const updateTeam = (updateOption) => {
     }
     switch (updateOption) {
         case TeamUpdateOptions.COACHES:
-            makeAPIRequest(`/teams/${teamSelect.value}/coaches`, data);
+            makeAPIRequest(`/teams/${teamSelect.value}`, data);
             break;
         case TeamUpdateOptions.SQUAD:
-            makeAPIRequest(`/teams/${teamSelect.value}/squad`, data);
+            makeAPIRequest(`/teams/${teamSelect.value}`, data);
             break;
     }
 }
@@ -56,7 +77,7 @@ const updateTeam = (updateOption) => {
 const makeAPIRequest = (route, data = null) => {
     axios.put(route, data)
         .then((response) => {
-            updateStatus.innerText = response.data.message;
+            updateStatus.innerText = response.data;
         })
         .catch((error) => {
             updateStatus.innerText = error;

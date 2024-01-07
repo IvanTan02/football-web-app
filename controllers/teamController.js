@@ -22,24 +22,46 @@ module.exports.renderTeamDetails = async (req, res) => {
     res.render('teams/details', { team })
 }
 
-module.exports.updateTeam = async (req, res) => {
+module.exports.updateTeams = async (req, res) => {
     const { teamId, updateOption } = req.body;
-    if (updateOption === 'Coaches') {
-        const team = await Team.findById(teamId).populate('coaches');
-        if (team) {
-            const message = await requestCoach(team)
-            res.send(message)
-        } else {
-            res.send('There was a problem finding this team');
+
+    if (teamId) {
+        // UPDATE SPECIFIC TEAM
+        if (updateOption === 'Coaches') {
+            const team = await Team.findById(teamId).populate('coaches');
+            if (team) {
+                const message = await requestCoach(team)
+                res.send(message);
+            } else {
+                res.send('There was a problem finding this team');
+            }
+        }
+        if (updateOption === 'Squad') {
+            const team = await Team.findById(teamId).populate('squad');
+            if (team) {
+                const message = await requestSquad(team)
+                res.send(message)
+            } else {
+                res.send('There was a problem finding this team');
+            }
+        }
+    } else {
+        // UPDATE ALL TEAMS
+        if (updateOption === 'Coaches') {
+            const teams = await Team.find({}).populate('coaches');
+            for (const team of teams) {
+                await requestCoach(team);
+            }
+            res.send('All coaches updated successfully');
+        }
+        if (updateOption === 'Squad') {
+            const teams = await Team.find({}).populate('squad');
+            for (const team of teams) {
+                await requestSquad(team);
+            }
+            res.send('All squads updated successfully');
         }
     }
-    if (updateOption === 'Squad') {
-        const team = await Team.findById(teamId).populate('squad');
-        if (team) {
-            const message = await requestSquad(team)
-            res.send(message)
-        } else {
-            res.send('There was a problem finding this team');
-        }
-    }
+
+
 }

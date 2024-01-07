@@ -48,7 +48,5 @@ module.exports.requestStandings = async () => {
     }
 }
 
-// Destroy and reset everything when the new season is coming
-const resetLeague = () => { }
 
 
