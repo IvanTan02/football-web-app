@@ -18,10 +18,9 @@ module.exports.dailyScheduler = async () => {
     await requestStandings();
     // Check if there is any fixtures today
     // const todaysFixtures = await getTodaysFixtures(todaysDate);
-    const todaysFixtures = await getTodaysFixtures('2023-10-21');
-    if (todaysFixtures.length !== 0) {
-        await processTodaysFixtures(todaysFixtures);
-    }
+    // if (todaysFixtures.length !== 0) {
+    //     await processTodaysFixtures(todaysFixtures);
+    // }
 };
 
 const processTodaysFixtures = async (todaysFixtures) => {

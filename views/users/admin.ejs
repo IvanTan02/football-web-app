@@ -1,9 +1,15 @@
 <% layout('layouts/boilerplate')%> <% if (currentUser && currentUser.isAdmin) { %>
 <div class="admin-controls col-8 offset-2 mb-3">
   <h3 class="mb-4 title">Admin Dashboard</h3>
+
   <div class="mb-4">
-    <h4 class="mb-3">Team Controls</h4>
-    <!-- <button id="update-teams-btn" class="btn btn-primary">Update Teams</button> -->
+    <h4 class="mb-3">Update All Teams</h4>
+    <button id="update-all-coach-btn" class="btn btn-primary">Update All Coaches</button>
+    <button id="update-all-squads-btn" class="btn btn-primary">Update All Squads</button>
+  </div>
+
+  <div class="mb-4">
+    <h4 class="mb-3">Update Specific Teams</h4>
     <select id="team-select" class="form-select mb-3" aria-label="Default select example">
       <option value="null" selected>Select Team to Edit</option>
       <% for (let team of teams) { %>
@@ -13,6 +19,7 @@
     <button id="update-coaches-btn" class="btn btn-primary">Update Coaches</button>
     <button id="update-squads-btn" class="btn btn-primary">Update Squad</button>
   </div>
+
   <div class="mb-4">
     <h4 class="mb-3">League Controls</h4>
     <div class="input-group mb-3">
@@ -41,5 +48,5 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <% } else { %>
-<h1>404</h1>
+<h1>404 Page Not Found</h1>
 <% } %>

@@ -4,10 +4,11 @@ const router = express.Router({ mergeParams: true });
 const teamController = require('../controllers/teamController');
 
 router.route('/')
-    .get(teamController.renderTeamsIndex);
+    .get(teamController.renderTeamsIndex)
+    .put(teamController.updateTeams);
 
 router.route('/:id')
     .get(teamController.renderTeamDetails)
-    .put(teamController.updateTeam);
+    .put(teamController.updateTeams);
 
 module.exports = router;
