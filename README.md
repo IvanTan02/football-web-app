@@ -1,5 +1,6 @@
 # EPLCentral
 EPLCentral is a football web app centered around the English Premier League (EPL). It allows users to view current, past, and future fixtures, look at the most updated league table, and discover information about the teams in the league. This project is built using Node.js and MongoDB, it also integrates an external Football API for the football data.
+![App Main Page](https://github.com/IvanTan02/football-web-app/assets/92838040/f7381778-6704-4e2e-9aed-883c1e0d51a2)
 
 ## Table of Contents
 - [Features](#features)
